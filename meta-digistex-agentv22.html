@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Meta Digistex Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#07070f;--bg2:#0f0f1a;--bg3:#161622;--bg4:#1c1c2e;--bg5:#222236;--border:#252538;--border2:#2e2e48;--border3:#383858;--text:#eeeef8;--text2:#9898b8;--text3:#555570;--blue:#4f8ef7;--blue2:#1a2d52;--blue3:#0d1830;--green:#2dd4a0;--green2:#0d2e22;--red:#f75f5f;--red2:#2e1212;--amber:#f7a94f;--amber2:#2e1f0d;--purple:#a78bfa;--purple2:#1e1540;--r:8px;--r2:12px;--r3:16px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"DM Sans",sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border3);border-radius:2px}
+.app-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:13px 22px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50}
+.fb-icon{width:30px;height:30px;background:linear-gradient(135deg,#1877F2,#4f8ef7);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fb-icon svg{width:17px;height:17px;fill:#fff}
+.app-title{font-size:14px;font-weight:600;letter-spacing:-.3px}
+.app-sub{font-size:10px;color:var(--text3);font-family:"DM Mono",monospace;text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+.app-bar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn{height:30px;padding:0 14px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-weight:500;font-family:"DM Sans",sans-serif;transition:all .12s;white-space:nowrap}
+.btn:hover{background:var(--bg4);color:var(--text)}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover{background:#3d7ae0}
+.btn.grn{background:var(--green2);border-color:var(--green);color:var(--green)}
+.btn.red{background:var(--red2);border-color:var(--red);color:var(--red)}
+.btn.amb{background:var(--amber2);border-color:var(--amber);color:var(--amber)}
+.btn.sm{height:26px;padding:0 10px;font-size:11px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+/* CONNECT */
+.con-screen{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 57px)}
+.con-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);padding:32px 36px;width:480px}
+.con-h{font-size:18px;font-weight:600;margin-bottom:5px}
+.con-sub{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.notice{background:var(--blue3);border:1px solid var(--blue2);border-radius:var(--r);padding:11px 14px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.5}
+.notice strong{color:var(--blue)}
+.notice-warn{background:var(--red2);border:1px solid var(--red);border-radius:var(--r);padding:11px 14px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.5}
+.notice-warn strong{color:var(--red)}
+.flbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-family:"DM Mono",monospace;display:block;margin-bottom:4px}
+.finp{width:100%;height:38px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:13px;font-family:"DM Mono",monospace;padding:0 11px;outline:none}
+.finp:focus{border-color:var(--blue)}
+.fhint{font-size:11px;color:var(--text3);margin-top:6px;margin-bottom:14px;line-height:1.5}
+.fhint a{color:var(--blue);text-decoration:none}
+.save-row{display:flex;align-items:center;gap:7px;margin-bottom:14px;font-size:12px;color:var(--text2)}
+.save-row input{accent-color:var(--blue)}
+.cta{width:100%;height:40px;background:linear-gradient(135deg,#1877F2,#4f8ef7);border:none;border-radius:var(--r);color:#fff;font-size:14px;font-weight:600;cursor:pointer}
+.cta:hover{opacity:.88}
+/* HUB */
+.hub{padding:24px;max-width:940px;margin:0 auto}
+.hub-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hub-h{font-size:20px;font-weight:600;letter-spacing:-.4px}
+.hub-sub{font-size:12px;color:var(--text2);margin-bottom:8px}
+.master-badge{display:inline-flex;align-items:center;gap:6px;background:var(--green2);border:1px solid var(--green);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--green);font-family:"DM Mono",monospace;margin-bottom:18px}
+.master-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 4px var(--green)}
+.blocked-notice{background:var(--red2);border:1px solid var(--red);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:11px;color:var(--red);display:flex;align-items:center;gap:8px}
+.brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px}
+.b-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;cursor:pointer;transition:border-color .15s;position:relative}
+.b-card:hover{border-color:var(--border3)}
+.b-card.add{border-style:dashed;border-color:var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:120px}
+.b-card.add:hover{border-color:var(--blue)}
+.b-ini{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;margin-bottom:9px}
+.b-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.b-cat{font-size:11px;color:var(--text2);margin-bottom:6px}
+.b-acct{font-size:10px;color:var(--text3);font-family:"DM Mono",monospace;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.b-status-row{display:flex;align-items:center;gap:5px}
+.b-led{width:6px;height:6px;border-radius:50%;background:var(--border3);flex-shrink:0}
+.b-led.ok{background:var(--green);box-shadow:0 0 4px var(--green)}
+.b-status-lbl{font-size:10px;color:var(--text3);font-family:"DM Mono",monospace}
+.b-badges{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+.bbadge{padding:2px 6px;border-radius:4px;font-size:10px;font-family:"DM Mono",monospace}
+.bb-p{background:var(--amber2);color:var(--amber);border:1px solid #6a3a10}
+.bb-h{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.del-x{position:absolute;top:7px;right:7px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 4px;border-radius:4px;opacity:0}
+.b-card:hover .del-x{opacity:1}
+.del-x:hover{color:var(--red)}
+.add-plus{font-size:24px;color:var(--text3);font-weight:300}
+.add-lbl{font-size:12px;color:var(--text2)}
+/* BRAND APP */
+.brand-app{display:none}
+.b-topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;gap:11px}
+.back-btn{background:none;border:1px solid var(--border2);border-radius:var(--r);padding:5px 10px;font-size:12px;color:var(--text2);cursor:pointer;font-family:"DM Sans",sans-serif}
+.back-btn:hover{background:var(--bg3)}
+.bp-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+.bp-name{font-size:14px;font-weight:600;color:var(--text)}
+.bp-sub{font-size:11px;color:var(--text2)}
+.conn-zone{margin-left:auto;display:flex;align-items:center;gap:8px}
+.led{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.led.on{background:var(--green);box-shadow:0 0 5px var(--green)}
+.conn-lbl{font-size:12px;color:var(--text2)}
+.app-body{padding:18px 22px;max-width:940px;margin:0 auto}
+.acct-bar{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:11px 15px;margin-bottom:14px}
+.acct-lbl{font-size:12px;color:var(--text2)}
+.acct-sel{height:30px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:0 10px;outline:none;cursor:pointer}
+.acct-sel:focus{border-color:var(--blue)}
+.acct-locked{font-size:11px;color:var(--green);font-family:"DM Mono",monospace;background:var(--green2);border:1px solid var(--green);border-radius:4px;padding:2px 8px}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:14px;overflow-x:auto}
+.tab{padding:7px 13px;font-size:12.5px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.tab .bdg{font-size:10px;background:var(--bg5);border-radius:20px;padding:1px 6px;margin-left:3px;color:var(--text3);font-family:"DM Mono",monospace}
+.tab.active .bdg{background:var(--blue3);color:var(--blue)}
+.tab .adot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-left:3px;vertical-align:middle}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:14px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px}
+.stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-family:"DM Mono",monospace;margin-bottom:5px}
+.stat-val{font-size:21px;font-weight:600;letter-spacing:-.5px}
+.tbar{display:flex;gap:7px;margin-bottom:9px;flex-wrap:wrap;align-items:center}
+.sinp{height:30px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:12px;padding:0 9px;outline:none;width:170px}
+.sinp:focus{border-color:var(--blue)}
+.fsel{height:30px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text2);font-size:12px;padding:0 9px;outline:none;cursor:pointer}
+.bbar{display:flex;align-items:center;gap:7px;padding:8px 12px;background:var(--blue3);border:1px solid var(--blue2);border-radius:var(--r);margin-bottom:9px;font-size:12px;color:var(--blue);flex-wrap:wrap}
+.bbar .br{margin-left:auto;display:flex;gap:5px}
+.tw{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;overflow-x:auto;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:540px}
+thead th{background:var(--bg3);padding:8px 12px;text-align:left;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;font-family:"DM Mono",monospace}
+thead th input{accent-color:var(--blue)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--bg3)}
+td{padding:9px 12px;color:var(--text);white-space:nowrap}
+td.mu{color:var(--text2)}
+td.mo{font-family:"DM Mono",monospace;font-size:11px}
+td input{accent-color:var(--blue)}
+.nc{max-width:170px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.spl{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:500;font-family:"DM Mono",monospace}
+.spl.active{background:var(--green2);color:var(--green);border:1px solid #1a4a36}
+.spl.paused{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.spl-dot{width:4px;height:4px;border-radius:50%;background:currentColor}
+.hb{display:inline-flex;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500;font-family:"DM Mono",monospace}
+.hb-strong{background:var(--green2);color:var(--green);border:1px solid #1a4a36}
+.hb-moderate{background:var(--amber2);color:var(--amber);border:1px solid #6a3a10}
+.hb-kill{background:var(--red2);color:var(--red);border:1px solid #4a1a1a}
+.hb-na{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.ei{width:85px;height:23px;background:var(--bg);border:1px solid var(--blue);border-radius:5px;color:var(--text);font-size:11px;font-family:"DM Mono",monospace;padding:0 5px;outline:none}
+.erow td,.lrow td{text-align:center;padding:26px;color:var(--text3);font-size:12px}
+.act-list{display:flex;flex-direction:column;gap:8px}
+.act-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:12px 15px;display:flex;align-items:flex-start;gap:11px}
+.act-card.approved{border-color:var(--green);background:var(--green2)}
+.act-card.rejected{opacity:.4}
+.act-card.executed{border-color:var(--blue2);background:var(--blue3)}
+.act-ico{width:30px;height:30px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700}
+.act-ico.pause{background:var(--red2);color:var(--red)}
+.act-ico.activate{background:var(--green2);color:var(--green)}
+.act-ico.creative{background:var(--amber2);color:var(--amber)}
+.act-body{flex:1;min-width:0}
+.act-title{font-size:12.5px;font-weight:500;margin-bottom:3px;color:var(--text)}
+.act-reason{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:6px}
+.act-tags{display:flex;gap:4px;flex-wrap:wrap}
+.atag{background:var(--bg4);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-size:10px;color:var(--text2);font-family:"DM Mono",monospace}
+.act-btns{display:flex;gap:5px;align-items:center;flex-shrink:0}
+.asb{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;font-family:"DM Mono",monospace}
+.asb-p{background:var(--amber2);color:var(--amber);border:1px solid #6a3a10}
+.asb-a{background:var(--green2);color:var(--green);border:1px solid #1a4a36}
+.asb-r{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.asb-e{background:var(--blue3);color:var(--blue);border:1px solid var(--blue2)}
+.hist-list{display:flex;flex-direction:column}
+.hi{display:flex;align-items:center;gap:9px;padding:8px 12px;border-bottom:1px solid var(--border)}
+.hi:last-child{border-bottom:none}
+.hi-ts{font-size:10px;color:var(--text3);font-family:"DM Mono",monospace;white-space:nowrap;min-width:110px}
+.hi-body{flex:1;min-width:0}
+.hi-title{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.hi-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.htag{padding:2px 6px;border-radius:4px;font-size:10px;font-family:"DM Mono",monospace}
+.ht-p{background:var(--red2);color:var(--red)}.ht-a{background:var(--green2);color:var(--green)}.ht-b{background:var(--amber2);color:var(--amber)}.ht-s{background:var(--blue3);color:var(--blue)}.ht-m{background:var(--bg4);color:var(--text3)}
+.ha-bar{display:flex;align-items:center;gap:11px;padding:12px 15px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);margin-bottom:11px}
+.ha-sum{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:11px}
+.hsc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:8px 11px}
+.hsc-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:"DM Mono",monospace;margin-bottom:3px}
+.hsc-val{font-size:18px;font-weight:600;letter-spacing:-.3px}
+.ins-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.ins-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:12px 14px}
+.ins-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ins-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ins-title{font-size:12.5px;font-weight:500;color:var(--text)}
+.ins-body{font-size:11px;color:var(--text2);line-height:1.55;margin-bottom:6px}
+.ins-act{font-size:11px;color:var(--blue);background:var(--blue3);border:1px solid var(--blue2);border-radius:4px;padding:3px 8px;display:inline-block}
+.sched-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px}
+.scard{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:14px 16px}
+.scard h4{font-size:13px;font-weight:500;margin-bottom:11px;color:var(--text)}
+.fr{margin-bottom:9px}
+.fr label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:"DM Mono",monospace;display:block;margin-bottom:4px}
+.fr input,.fr select{width:100%;height:33px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:0 9px;outline:none;font-family:"DM Sans",sans-serif}
+.fr input:focus,.fr select:focus{border-color:var(--blue)}
+.trow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.trow:last-child{border-bottom:none;padding-bottom:0}
+.trow-lbl{font-size:12px;color:var(--text)}
+.trow-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.tgl{position:relative;width:36px;height:19px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0}
+.tslider{position:absolute;inset:0;background:var(--bg5);border-radius:20px;cursor:pointer;transition:.2s}
+.tslider:before{content:"";position:absolute;width:13px;height:13px;left:3px;bottom:3px;background:var(--text3);border-radius:50%;transition:.2s}
+input:checked + .tslider{background:var(--blue)}
+input:checked + .tslider:before{transform:translateX(17px);background:#fff}
+.slog{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.slog-hdr{background:var(--bg3);padding:8px 12px;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);font-family:"DM Mono",monospace;display:flex;justify-content:space-between}
+.slog-body{max-height:170px;overflow-y:auto}
+.sl{padding:6px 12px;font-size:11px;font-family:"DM Mono",monospace;color:var(--text2);border-bottom:1px solid var(--border)}
+.sl:last-child{border-bottom:none}
+.sl.ok{color:var(--green)}.sl.err{color:var(--red)}.sl.info{color:var(--blue)}
+.sl .ts{color:var(--text3);margin-right:6px}
+.nr-bar{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--green2);border:1px solid #1a4a36;border-radius:var(--r);margin-bottom:11px}
+.nr-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);flex-shrink:0}
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:500}
+.modal{background:var(--bg2);border:1px solid var(--border3);border-radius:var(--r3);padding:22px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:14px;font-weight:600;margin-bottom:3px;color:var(--text)}
+.modal p{font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.5}
+.modal label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:"DM Mono",monospace;display:block;margin-bottom:4px;margin-top:12px}
+.modal label:first-of-type{margin-top:0}
+.modal select,.modal input{width:100%;height:35px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;font-family:"DM Sans",sans-serif;padding:0 9px;outline:none}
+.modal select:focus,.modal input:focus{border-color:var(--blue)}
+.modal-acts{display:flex;gap:7px;margin-top:15px;justify-content:flex-end}
+.clist{list-style:none;display:flex;flex-direction:column;gap:5px;margin:8px 0}
+.clist li{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 10px;font-size:11px;display:flex;align-items:center;gap:7px;color:var(--text)}
+.empty-box{text-align:center;padding:28px;color:var(--text3);font-size:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2)}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sec-hdr h3{font-size:14px;font-weight:600;color:var(--text)}
+.sec-hdr p{font-size:11px;color:var(--text2);margin-top:2px}
+.toast-wrap{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:7px;z-index:999;pointer-events:none}
+.toast{padding:9px 14px;border-radius:var(--r);font-size:12px;font-weight:500;border:1px solid;pointer-events:none}
+.toast.success{background:var(--green2);color:var(--green);border-color:#1a4a36}
+.toast.error{background:var(--red2);color:var(--red);border-color:#4a1a1a}
+.toast.info{background:var(--blue3);color:var(--blue);border-color:var(--blue2)}
+.toast.amber{background:var(--amber2);color:var(--amber);border-color:#6a3a10}
+
+/* ── TASKS ── */
+.task-board{display:flex;flex-direction:column;gap:10px}
+.task-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:14px 16px;display:flex;align-items:flex-start;gap:12px}
+.task-card.done{opacity:.5}
+.task-ico{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.task-ico.dup{background:var(--blue2);color:var(--blue)}.task-ico.pub{background:var(--green2);color:var(--green)}.task-ico.rev{background:var(--amber2);color:var(--amber)}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.task-sub{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:7px}
+.task-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.task-pill{padding:2px 7px;border-radius:4px;font-size:10px;font-family:"DM Mono",monospace}
+.tp-draft{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.tp-prog{background:var(--blue3);color:var(--blue);border:1px solid var(--blue2)}
+.tp-done{background:var(--green2);color:var(--green);border:1px solid #1a4a36}
+.task-acts{display:flex;gap:5px;flex-shrink:0;flex-direction:column;align-items:flex-end}
+/* ── CREATIVE DUPLICATOR ── */
+.dup-wizard{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);overflow:hidden}
+.dup-steps{display:flex;border-bottom:1px solid var(--border);padding:14px 18px;gap:0;background:var(--bg3)}
+.ds{display:flex;align-items:center;gap:7px;flex:1}
+.ds-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;font-family:"DM Mono",monospace;flex-shrink:0;transition:all .2s}
+.ds-num.wait{background:var(--bg4);border:1px solid var(--border2);color:var(--text3)}
+.ds-num.active{background:var(--blue);color:#fff;border:none}
+.ds-num.done{background:var(--green2);color:var(--green);border:1px solid var(--green)}
+.ds-lbl{font-size:11px;color:var(--text3);font-weight:500;transition:color .2s}
+.ds.active .ds-lbl{color:var(--text)}.ds.done .ds-lbl{color:var(--green)}
+.ds-sep{width:20px;height:1px;background:var(--border2);margin:0 2px;flex-shrink:0}
+.dup-body{padding:18px 20px}
+.dup-section{margin-bottom:16px}
+.dup-section h4{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.ad-pick-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.ad-pick{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .15s}
+.ad-pick:hover{border-color:var(--border3)}.ad-pick.sel{border-color:var(--blue);background:var(--blue3)}
+.ad-pick-name{font-size:12px;font-weight:500;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad-pick-meta{font-size:10px;color:var(--text3);font-family:"DM Mono",monospace;white-space:nowrap}
+.drive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;max-height:300px;overflow-y:auto}
+.drive-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 8px;cursor:pointer;text-align:center;transition:border-color .15s}
+.drive-item:hover{border-color:var(--border3)}.drive-item.sel{border-color:var(--blue);background:var(--blue3)}
+.drive-icon{font-size:24px;margin-bottom:5px}
+.drive-name{font-size:10px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:"DM Mono",monospace}
+.drive-size{font-size:9px;color:var(--text3);margin-top:2px}
+.ad-row-list{display:flex;flex-direction:column;gap:8px}
+.ad-row{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:12px 14px}
+.ad-row-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ad-row-lbl{font-size:12px;font-weight:600;color:var(--blue)}
+.ad-row-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.af{display:flex;flex-direction:column;gap:4px}
+.af label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:"DM Mono",monospace}
+.af input,.af textarea,.af select{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:6px 9px;outline:none;font-family:"DM Sans",sans-serif}
+.af input:focus,.af textarea:focus,.af select:focus{border-color:var(--blue)}
+.af textarea{height:60px;resize:vertical;line-height:1.4}.af.full{grid-column:1/-1}
+.prog-bar-wrap{background:var(--bg3);border-radius:20px;height:6px;overflow:hidden;margin:8px 0}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:20px;transition:width .4s ease}
+.pub-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px}
+.pub-row-name{font-size:12px;font-weight:500;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pub-row-status{font-size:10px;font-family:"DM Mono",monospace;padding:2px 7px;border-radius:4px}
+.prs-wait{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.prs-run{background:var(--blue3);color:var(--blue);border:1px solid var(--blue2)}
+.prs-ok{background:var(--green2);color:var(--green);border:1px solid #1a4a36}
+.prs-err{background:var(--red2);color:var(--red);border:1px solid #4a1a1a}
+.drive-search{width:100%;height:32px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:0 10px;outline:none;margin-bottom:10px}
+.drive-search:focus{border-color:var(--blue)}
+/* ── AI AUDIT ── */
+.audit-hero{background:linear-gradient(135deg,var(--bg2) 0%,#0d1830 100%);border:1px solid var(--blue2);border-radius:var(--r2);padding:18px 20px;margin-bottom:14px;display:flex;align-items:center;gap:16px}
+.audit-hero-icon{width:44px;height:44px;border-radius:var(--r2);background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.audit-hero-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px}
+.audit-hero-sub{font-size:11px;color:var(--text2);line-height:1.5}
+.audit-hero-right{margin-left:auto;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.audit-config{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:14px}
+.audit-config h4{font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px}
+.audit-config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.ac-item{display:flex;flex-direction:column;gap:4px}
+.ac-item label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:"DM Mono",monospace}
+.ac-item select{height:30px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:0 8px;outline:none}
+.ac-item select:focus{border-color:var(--blue)}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.audit-results{display:flex;flex-direction:column;gap:10px}
+.audit-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);overflow:hidden}
+.audit-card-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)}
+.ac-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:"DM Mono",monospace}
+.acb-scale{background:var(--green2);color:var(--green);border:1px solid #1a4a36}
+.acb-optimize{background:var(--blue3);color:var(--blue);border:1px solid var(--blue2)}
+.acb-watch{background:var(--amber2);color:var(--amber);border:1px solid #6a3a10}
+.acb-kill{background:var(--red2);color:var(--red);border:1px solid #4a1a1a}
+.ac-score{font-size:11px;font-family:"DM Mono",monospace;color:var(--text3)}
+.ac-name{font-size:12.5px;font-weight:500;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-card-body{padding:12px 14px}
+.audit-metrics{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.am{background:var(--bg3);border-radius:var(--r);padding:5px 9px;text-align:center}
+.am-lbl{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-family:"DM Mono",monospace}
+.am-val{font-size:13px;font-weight:600;color:var(--text);margin-top:1px}
+.audit-ai-section{background:var(--bg3);border-radius:var(--r);padding:10px 12px;margin-bottom:8px}
+.aas-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:"DM Mono",monospace;margin-bottom:5px}
+.aas-body{font-size:12px;color:var(--text2);line-height:1.6}
+.aas-body strong{color:var(--text)}
+.audit-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.audit-tag{padding:2px 8px;border-radius:4px;font-size:10px;font-family:"DM Mono",monospace;background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.audit-tag.hook{background:var(--purple2);color:var(--purple)}.audit-tag.url{background:var(--red2);color:var(--red)}
+.audit-tag.scale{background:var(--green2);color:var(--green)}.audit-tag.kill{background:var(--red2);color:var(--red)}
+.audit-tag.brief{background:var(--amber2);color:var(--amber)}
+.audit-brief{background:var(--bg2);border:1px solid var(--amber);border-radius:var(--r);padding:10px 12px;margin-top:8px}
+.ab-title{font-size:10px;color:var(--amber);font-family:"DM Mono",monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.ab-body{font-size:12px;color:var(--text2);line-height:1.6}
+.audit-summary{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:14px 16px;margin-bottom:14px}
+.as-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+.as-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.as-cell{background:var(--bg3);border-radius:var(--r);padding:9px;text-align:center}
+.as-cell-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:"DM Mono",monospace}
+.as-cell-val{font-size:19px;font-weight:600;letter-spacing:-.4px;margin-top:3px}
+.audit-insight{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)}
+.audit-insight:last-child{border-bottom:none}
+.ai-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ai-body{flex:1}
+.ai-title{font-size:12.5px;font-weight:500;color:var(--text);margin-bottom:2px}
+.ai-sub{font-size:11px;color:var(--text2);line-height:1.5}
+.ai-action{font-size:11px;color:var(--blue);background:var(--blue3);border:1px solid var(--blue2);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:4px}
+
+.filter-bar{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:9px 15px;margin-bottom:14px;flex-wrap:wrap}
+.filter-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-family:"DM Mono",monospace;white-space:nowrap}
+.filter-sep{width:1px;height:20px;background:var(--border2);flex-shrink:0}
+.fsel-pri{height:30px;background:var(--bg4);border:1px solid var(--blue2);border-radius:var(--r);color:var(--blue);font-size:12px;padding:0 10px;outline:none;cursor:pointer;font-weight:500}
+.fsel-pri:focus{border-color:var(--blue)}
+.curr-pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;background:var(--green2);border:1px solid var(--green);font-size:11px;color:var(--green);font-family:"DM Mono",monospace;font-weight:500}
+.refresh-btn{height:28px;padding:0 10px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.refresh-btn:hover{background:var(--bg4);color:var(--text)}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="TW"></div>
+<div id="MW"></div>
+
+<div class="app-bar">
+  <div class="fb-icon"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
+  <div><div class="app-title">Meta Digistex Agent</div><div class="app-sub">One master token — all brand accounts</div></div>
+  <div class="app-bar-right">
+    <div class="led" id="G-LED"></div>
+    <span style="font-size:12px;color:var(--text2)" id="G-LBL">Not connected</span>
+    <button class="btn sm" id="HUB-BTN" onclick="goHub()" style="display:none">All brands</button>
+    <button class="btn sm" onclick="openTokenSettings()">Token settings</button>
+    
+  </div>
+</div>
+
+<!-- CONNECT SCREEN -->
+<div id="CON-SCREEN" class="con-screen">
+  <div class="con-card">
+    <div class="con-h">Connect Master Token</div>
+    <div class="con-sub">One token connects all your brand ad accounts. Saved once — auto-connects every visit.</div>
+    <div class="notice">
+      <strong>How it works:</strong> Your single Meta token gives access to all ad accounts under your Facebook user. Each brand workspace shows only its assigned account. Great Learning is permanently blocked.
+    </div>
+    <div class="notice-warn">
+      <strong>Blocked:</strong> Great Learning — Inhouse (act_1955441571341500) will never appear in any brand workspace regardless of token.
+    </div>
+    <label class="flbl">Master access token</label>
+    <input class="finp" type="password" id="TI" placeholder="EAABsbCS4..."/>
+    <div class="fhint">Get from <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Graph API Explorer</a> — the same token you already have works for all accounts</div>
+    <div class="save-row"><input type="checkbox" id="RT" checked/><span>Remember master token in this browser (auto-login next visit)</span></div>
+    <button class="cta" onclick="doConnect()">Connect all brands &rarr;</button>
+  </div>
+</div>
+
+<!-- HUB -->
+<div id="HUB" style="display:none" class="hub">
+  <div class="hub-header">
+    <div class="hub-h">Brand Accounts</div>
+    <button class="btn pri sm" onclick="addBrand()">+ Add brand</button>
+  </div>
+  <div class="hub-sub">Each brand uses the master token but only sees its own assigned ad account.</div>
+  <div class="master-badge"><div class="dot"></div><span id="MASTER-LBL">Connected</span></div>
+  <div class="blocked-notice">
+    &#128683; <span><strong style="color:var(--red)">Great Learning — Inhouse</strong> is permanently blocked from this tool. It will never appear in any brand workspace or dropdown.</span>
+  </div>
+  <div class="brand-grid" id="BGRID">
+    <div class="b-card add" onclick="addBrand()"><div class="add-plus">+</div><div class="add-lbl">Add brand</div></div>
+  </div>
+</div>
+
+<!-- BRAND APP -->
+<div id="APP" class="brand-app">
+  <div class="b-topbar">
+    <button class="back-btn" onclick="goHub()">&#8592; All brands</button>
+    <div class="bp-icon" id="B-ICO"></div>
+    <div><div class="bp-name" id="B-NAME">-</div><div class="bp-sub" id="B-SUB">-</div></div>
+    <div class="conn-zone">
+      <div class="led on"></div>
+      <span class="conn-lbl" id="C-LBL">-</span>
+    </div>
+  </div>
+
+  <div class="app-body">
+    <div class="acct-bar">
+      <span class="acct-lbl">Ad account</span>
+      <div id="ACCT-DISPLAY"></div>
+      <span style="font-size:11px;color:var(--text3);margin-left:6px" id="ACCT-INFO"></span>
+      <div style="margin-left:auto;display:flex;gap:6px" id="TBTNS"></div>
+    </div>
+
+    <!-- DATE & CURRENCY FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-lbl">Date range</span>
+      <select class="fsel-pri" id="DATE-PRESET" onchange="onDateChange()">
+        <option value="today">Today</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="last_7d">Last 7 days</option>
+        <option value="last_14d">Last 14 days</option>
+        <option value="last_30d" selected>Last 30 days</option>
+        <option value="last_90d">Last 90 days</option>
+        <option value="this_month">This month</option>
+        <option value="last_month">Last month</option>
+        <option value="this_quarter">This quarter</option>
+        <option value="custom">Custom range</option>
+      </select>
+      <div class="date-custom" id="DATE-CUSTOM" style="display:none;align-items:center;gap:6px">
+        <input type="date" id="DATE-FROM" onchange="reloadData()"/>
+        <span style="font-size:11px;color:var(--text3)">to</span>
+        <input type="date" id="DATE-TO" onchange="reloadData()"/>
+      </div>
+      <div class="filter-sep"></div>
+      <span class="filter-lbl">Currency</span>
+      <select class="fsel-pri" id="CURR-SEL" onchange="onCurrChange()">
+        <option value="INR">Rs. INR</option>
+        <option value="USD">$ USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+        <option value="AED">AED</option>
+        <option value="SGD">SGD</option>
+        <option value="AUD">AUD</option>
+      </select>
+      <div class="curr-pill" id="CURR-BADGE">Rs. INR</div>
+      <div class="filter-sep"></div>
+      <span style="font-size:11px;color:var(--text3)" id="DATE-BADGE">Last 30 days</span>
+      <button class="refresh-btn" onclick="reloadData()" style="margin-left:auto">&#8635; Refresh</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" id="t-campaigns" onclick="goTab('campaigns')">Campaigns<span class="bdg" id="nb-c">-</span></div>
+      <div class="tab" id="t-adsets" onclick="goTab('adsets')">Ad sets<span class="bdg" id="nb-as">-</span></div>
+      <div class="tab" id="t-ads" onclick="goTab('ads')">Ads<span class="bdg" id="nb-a">-</span></div>
+      <div class="tab" id="t-hooks" onclick="goTab('hooks')">Hook Analysis<span class="bdg" id="nb-h">-</span></div>
+      <div class="tab" id="t-actionables" onclick="goTab('actionables')">Actionables<span class="bdg" id="nb-act">-</span><span class="adot" id="ADOT" style="display:none"></span></div>
+      <div class="tab" id="t-history" onclick="goTab('history')">History<span class="bdg" id="nb-hist">0</span></div>
+      <div class="tab" id="t-scheduler" onclick="goTab('scheduler')">Scheduler</div>
+      <div class="tab" id="t-tasks" onclick="goTab('tasks')">Tasks<span class="bdg" id="nb-tasks">0</span></div>
+      <div class="tab" id="t-duplicator" onclick="goTab('duplicator')">Creative Duplicator</div>
+      <div class="tab" id="t-aiaudit" onclick="goTab('aiaudit')">🤖 AI Audit<span class="bdg" id="nb-audit">-</span></div>
+    </div>
+
+    <div id="pn-campaigns">
+      <div class="stats">
+        <div class="stat"><div class="stat-lbl">Campaigns</div><div class="stat-val" id="sc-t" style="color:var(--blue)">-</div></div>
+        <div class="stat"><div class="stat-lbl">Active</div><div class="stat-val" id="sc-a" style="color:var(--green)">-</div></div>
+        <div class="stat"><div class="stat-lbl">Spend 30d</div><div class="stat-val" id="sc-s" style="color:var(--amber)">-</div></div>
+        <div class="stat"><div class="stat-lbl">Account</div><div class="stat-val" id="sc-ac" style="color:var(--text);font-size:13px;margin-top:4px">-</div></div>
+      </div>
+      <div class="tbar">
+        <input class="sinp" id="sr-campaigns" type="text" placeholder="Search..." oninput="rd('campaigns')"/>
+        <select class="fsel" id="sf-campaigns" onchange="rd('campaigns')"><option value="">All</option><option value="ACTIVE">Active</option><option value="PAUSED">Paused</option></select>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <button class="btn sm" style="color:var(--purple);border-color:var(--purple2)" onclick="runHooks()">Run Hooks</button>
+          <button class="btn sm pri" onclick="newCamp()">+ New</button>
+        </div>
+      </div>
+      <div class="bbar" id="bb-campaigns" style="display:none"><span id="bc-campaigns">0 sel</span><div class="br"><button class="btn sm grn" onclick="ba('campaigns','ACTIVE')">Activate</button><button class="btn sm red" onclick="ba('campaigns','PAUSED')">Pause</button><button class="btn sm amb" onclick="oBB('campaigns')">Budget</button><button class="btn sm" onclick="cls('campaigns')">Clear</button></div></div>
+      <div class="tw"><table><thead id="th-campaigns"></thead><tbody id="tb-campaigns"><tr class="lrow"><td colspan="7">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <div id="pn-adsets" style="display:none">
+      <div class="stats"><div class="stat"><div class="stat-lbl">Ad sets</div><div class="stat-val" id="ss-t" style="color:var(--blue)">-</div></div><div class="stat"><div class="stat-lbl">Active</div><div class="stat-val" id="ss-a" style="color:var(--green)">-</div></div><div class="stat"><div class="stat-lbl">Spend 30d</div><div class="stat-val" id="ss-s" style="color:var(--amber)">-</div></div><div class="stat"><div class="stat-lbl">Avg CPC</div><div class="stat-val" id="ss-c" style="color:var(--text)">-</div></div></div>
+      <div class="tbar"><input class="sinp" id="sr-adsets" type="text" placeholder="Search..." oninput="rd('adsets')"/><select class="fsel" id="sf-adsets" onchange="rd('adsets')"><option value="">All</option><option value="ACTIVE">Active</option><option value="PAUSED">Paused</option></select><div style="margin-left:auto"><button class="btn sm pri" onclick="newAdSetFromTab()">+ New ad set</button></div></div>
+      <div class="bbar" id="bb-adsets" style="display:none"><span id="bc-adsets">0 sel</span><div class="br"><button class="btn sm grn" onclick="ba('adsets','ACTIVE')">Activate</button><button class="btn sm red" onclick="ba('adsets','PAUSED')">Pause</button><button class="btn sm amb" onclick="oBB('adsets')">Budget</button><button class="btn sm" onclick="cls('adsets')">Clear</button></div></div>
+      <div class="tw"><table><thead id="th-adsets"></thead><tbody id="tb-adsets"><tr class="lrow"><td colspan="7">Load ad sets</td></tr></tbody></table></div>
+    </div>
+
+    <div id="pn-ads" style="display:none">
+      <div class="stats"><div class="stat"><div class="stat-lbl">Ads</div><div class="stat-val" id="sa-t" style="color:var(--blue)">-</div></div><div class="stat"><div class="stat-lbl">Active</div><div class="stat-val" id="sa-a" style="color:var(--green)">-</div></div><div class="stat"><div class="stat-lbl">Spend 30d</div><div class="stat-val" id="sa-s" style="color:var(--amber)">-</div></div><div class="stat"><div class="stat-lbl">Kill signals</div><div class="stat-val" id="sa-k" style="color:var(--red)">-</div></div></div>
+      <div class="tbar"><input class="sinp" id="sr-ads" type="text" placeholder="Search..." oninput="rd('ads')"/><select class="fsel" id="sf-ads" onchange="rd('ads')"><option value="">All</option><option value="ACTIVE">Active</option><option value="PAUSED">Paused</option></select><div style="margin-left:auto"><button class="btn sm pri" onclick="newAdFromTab()">+ New ad</button></div></div>
+      <div class="bbar" id="bb-ads" style="display:none"><span id="bc-ads">0 sel</span><div class="br"><button class="btn sm grn" onclick="ba('ads','ACTIVE')">Activate</button><button class="btn sm red" onclick="ba('ads','PAUSED')">Pause</button><button class="btn sm" onclick="cls('ads')">Clear</button></div></div>
+      <div class="tw"><table><thead id="th-ads"></thead><tbody id="tb-ads"><tr class="lrow"><td colspan="7">Load ads</td></tr></tbody></table></div>
+    </div>
+
+    <div id="pn-hooks" style="display:none">
+      <div class="ha-bar"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">Creative Hook Intelligence</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Classify ads, score STRONG/MODERATE/KILL, generate actionables.</div></div><button class="btn pri" onclick="runHooks()" id="BRH">Run Analysis</button></div>
+      <div class="ha-sum" id="HA-SUM" style="display:none"><div class="hsc"><div class="hsc-lbl">Dispatch</div><div class="hsc-val" id="hs-d" style="color:var(--blue)">0</div></div><div class="hsc"><div class="hsc-lbl">Aspiration</div><div class="hsc-val" id="hs-a" style="color:var(--purple)">0</div></div><div class="hsc"><div class="hsc-lbl">Seasonal</div><div class="hsc-val" id="hs-s" style="color:var(--amber)">0</div></div><div class="hsc"><div class="hsc-lbl">Educational</div><div class="hsc-val" id="hs-e" style="color:var(--green)">0</div></div><div class="hsc"><div class="hsc-lbl">Trending</div><div class="hsc-val" id="hs-t" style="color:var(--red)">0</div></div></div>
+      <div class="tw" id="HT" style="display:none"><table><thead id="th-hooks"></thead><tbody id="tb-hooks"></tbody></table></div>
+      <div class="ins-list" id="HI" style="display:none"></div>
+      <div class="empty-box" id="HE">Run analysis to classify ads and get recommendations.</div>
+    </div>
+
+    <div id="pn-actionables" style="display:none">
+      <div class="sec-hdr"><div><h3>Actionables</h3><p>Approve then execute. Nothing changes without your confirmation.</p></div><div style="display:flex;gap:6px"><button class="btn amb" onclick="execApproved()" id="BEX" disabled>Execute approved</button><button class="btn sm" onclick="clearActs()">Clear all</button></div></div>
+      <div id="AL"><div class="empty-box">No actionables yet.</div></div>
+    </div>
+
+    <div id="pn-history" style="display:none">
+      <div class="sec-hdr"><div><h3>Change history</h3><p>Every change for this brand.</p></div><button class="btn sm red" onclick="clrH()">Clear</button></div>
+      <div class="tw" id="HL"><div class="empty-box">No changes yet.</div></div>
+    </div>
+
+    <div id="pn-scheduler" style="display:none">
+      <div style="font-size:15px;font-weight:600;margin-bottom:3px;color:var(--text)">Daily Scheduler</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Per-brand — runs independently using the master token.</div>
+      <div class="nr-bar" id="NRS" style="display:none"><div class="nr-dot"></div><div><div style="font-size:12px;font-weight:500;color:var(--text)">Next run: <span id="NRT">-</span></div><div style="font-size:10px;color:var(--text2)">Master token auto-connects</div></div><button class="btn sm" onclick="runNow()" style="margin-left:auto">Run now</button></div>
+      <div class="sched-grid">
+        <div class="scard"><h4>Schedule</h4>
+          <div class="fr"><label>Run time</label><input type="time" id="ST" value="08:00"/></div>
+          <div class="fr"><label>Timezone</label><select id="STZ"><option value="Asia/Kolkata">Asia/Kolkata (IST)</option><option value="UTC">UTC</option><option value="America/New_York">America/New_York</option><option value="Europe/London">Europe/London</option></select></div>
+          <button class="btn pri" style="width:100%;justify-content:center;margin-top:4px" onclick="saveSched()">Save and enable</button>
+          <button class="btn" style="width:100%;justify-content:center;margin-top:7px" onclick="disSched()">Disable</button>
+        </div>
+        <div class="scard"><h4>Rules</h4>
+          <div class="trow"><div><div class="trow-lbl">Auto-pause zero-ROAS ads</div><div class="trow-sub">0 purchases after $10 spend</div></div><label class="tgl"><input type="checkbox" id="R1" checked/><span class="tslider"></span></label></div>
+          <div class="trow"><div><div class="trow-lbl">Flag low hook rate</div><div class="trow-sub">Below 8%</div></div><label class="tgl"><input type="checkbox" id="R2" checked/><span class="tslider"></span></label></div>
+          <div class="trow"><div><div class="trow-lbl">Flag frontpage URL</div><div class="trow-sub">Homepage routing waste</div></div><label class="tgl"><input type="checkbox" id="R3" checked/><span class="tslider"></span></label></div>
+          <div class="trow"><div><div class="trow-lbl">Auto-approve zero-conv kills</div><div class="trow-sub">Skip approval for 0-purchase</div></div><label class="tgl"><input type="checkbox" id="R4"/><span class="tslider"></span></label></div>
+        </div>
+      </div>
+      <div class="slog"><div class="slog-hdr">Log<span id="SLC" style="font-size:10px;color:var(--text3)">0 entries</span></div><div class="slog-body" id="SLB"><div class="sl info"><span class="ts">-</span>Ready.</div></div></div>
+    </div>
+  </div>
+</div>
+
+    <!-- TASKS PANEL -->
+    <div id="pn-tasks" style="display:none">
+      <div class="sec-hdr">
+        <div><h3>Task Board</h3><p>Assign and track creative work per brand.</p></div>
+        <button class="btn pri sm" onclick="openNewTask()">+ New task</button>
+      </div>
+      <div id="TASK-LIST"><div class="empty-box">No tasks yet.</div></div>
+    </div>
+
+    <!-- CREATIVE DUPLICATOR PANEL -->
+    <div id="pn-duplicator" style="display:none">
+      <div class="dup-wizard" id="DUP-WIZARD">
+        <div class="dup-steps" id="DUP-STEPS">
+          <div class="ds active" id="dss-1"><div class="ds-num active" id="dsn-1">1</div><div class="ds-lbl">Pick source ad</div></div>
+          <div class="ds-sep"></div>
+          <div class="ds" id="dss-2"><div class="ds-num wait" id="dsn-2">2</div><div class="ds-lbl">Choose creatives</div></div>
+          <div class="ds-sep"></div>
+          <div class="ds" id="dss-3"><div class="ds-num wait" id="dsn-3">3</div><div class="ds-lbl">Configure ads</div></div>
+          <div class="ds-sep"></div>
+          <div class="ds" id="dss-4"><div class="ds-num wait" id="dsn-4">4</div><div class="ds-lbl">Review & publish</div></div>
+        </div>
+        <div class="dup-body" id="DUP-BODY">
+          <div class="empty-box">Load Ads tab first, then come back to duplicate.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI AUDIT PANEL -->
+    <div id="pn-aiaudit" style="display:none">
+      <div class="audit-hero">
+        <div class="audit-hero-icon">🤖</div>
+        <div>
+          <div class="audit-hero-title">AI Creative Audit Engine</div>
+          <div class="audit-hero-sub">Hook Analysis · Creative Intelligence · Meta Agent — all 3 Digistex skills.<br>Scores every ad on 8 dimensions, detects fatigue &amp; URL issues, generates specific fixes.</div>
+        </div>
+        <div class="audit-hero-right">
+          <button class="btn pri" onclick="runAIAudit()" id="AI-AUDIT-BTN">&#9654; Run AI Audit</button>
+          <button class="btn sm" onclick="clearAudit()">Clear</button>
+        </div>
+      </div>
+      <div class="audit-config">
+        <h4>Configuration</h4>
+        <div class="audit-config-grid">
+          <div class="ac-item"><label>Depth</label><select id="AUDIT-DEPTH"><option value="full">Full — all 8 dimensions</option><option value="quick">Quick — top issues</option></select></div>
+          <div class="ac-item"><label>Kill threshold (INR)</label><select id="AUDIT-KILL-THR"><option value="800">Rs.800</option><option value="500">Rs.500</option><option value="1500">Rs.1500</option><option value="2000">Rs.2000</option></select></div>
+          <div class="ac-item"><label>Scale threshold (ROAS)</label><select id="AUDIT-SCALE-THR"><option value="5">5x</option><option value="3">3x</option><option value="7">7x</option><option value="10">10x</option></select></div>
+        </div>
+      </div>
+      <div id="AUDIT-STATUS" style="display:none;text-align:center;padding:28px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);margin-bottom:14px">
+        <div style="font-size:28px;animation:spin .8s linear infinite;display:inline-block;margin-bottom:10px">&#9881;</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:4px" id="AUDIT-MSG">Analysing ads...</div>
+        <div style="font-size:11px;color:var(--text3)">Scoring 8 dimensions, detecting URL issues and hook mismatches</div>
+      </div>
+      <div id="AUDIT-RESULTS" style="display:none"></div>
+    </div>
+
+<script>
+var GFB = 'https://graph.facebook.com/v22.0';
+// ── BLOCKED ACCOUNTS — Great Learning never appears ──
+var BLOCKED_IDS = ['1955441571341500','act_1955441571341500'];
+var BLOCKED_NAMES = ['great learning'];
+function isBlocked(acct) {
+  if(!acct) return false;
+  var id = (acct.account_id||acct.id||'').replace('act_','');
+  if(BLOCKED_IDS.indexOf(id)>=0 || BLOCKED_IDS.indexOf('act_'+id)>=0) return true;
+  var name = (acct.name||'').toLowerCase();
+  for(var i=0;i<BLOCKED_NAMES.length;i++){if(name.indexOf(BLOCKED_NAMES[i])>=0)return true;}
+  return false;
+}
+var COLORS = ['#4f8ef7','#2dd4a0','#f7a94f','#f75f5f','#a78bfa','#22d3ee','#f472b6','#fb923c'];
+var BRANDS = [], curBrand = null, TOK = '', ALL_ACCTS = [], curTab = 'campaigns';
+var D = {campaigns:[],adsets:[],ads:[]}, HKS = [], ACTS = [], HIST = [];
+var SEL = {campaigns:new Set(),adsets:new Set(),ads:new Set()};
+var schedTmr = null;
+var BRAND_ACCT = null; // the single account for current brand
+function lsG(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsS(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function lsD(k){try{localStorage.removeItem(k);}catch(e){}}
+function bk(k){return 'dgx_'+curBrand.id+'_'+k;}
+function ini(n){return n.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();}
+function clr(id){var h=id.split('').reduce(function(a,c){return a+c.charCodeAt(0);},0);return COLORS[h%COLORS.length];}
+function spn(s){return '<span class="spl '+s.toLowerCase()+'"><span class="spl-dot"></span>'+s+'</span>';}
+function bf(d){if(d.daily_budget)return '$'+(+d.daily_budget/100).toFixed(2)+'/d';if(d.lifetime_budget)return '$'+(+d.lifetime_budget/100).toFixed(2)+' LT';return '-';}
+function fs(n){return n?'$'+parseFloat(n).toFixed(2):'-';}
+
+window.addEventListener('DOMContentLoaded', function(){
+  var s=lsG('dgx_brands');if(s){try{BRANDS=JSON.parse(s);}catch(e){BRANDS=[];}}
+  var tok=lsG('dgx_master_tok');
+  if(tok){TOK=tok;document.getElementById('TI').value='--------';doConnect(true);}
+});
+
+function api(path,method,body){
+  var u=GFB+path+(path.indexOf('?')>=0?'&':'?')+'access_token='+TOK;
+  var o={method:method||'GET',headers:{'Content-Type':'application/json'}};
+  if(body)o.body=JSON.stringify(body);
+  return fetch(u,o).then(function(r){return r.json();}).then(function(d){if(d.error)throw new Error(d.error.message);return d;});
+}
+
+function doConnect(silent){
+  if(!silent){var v=document.getElementById('TI').value.trim();if(v&&v!=='--------')TOK=v;}
+  if(!TOK){toast('Enter access token','error');return;}
+  api('/me?fields=name,id').then(function(me){
+    // Paginate all accounts — handles 100+ accounts
+    function fetchAccts(url, collected){
+      return fetch(url+'&access_token='+TOK).then(function(r){return r.json();}).then(function(ac){
+        var filtered=(ac.data||[]).filter(function(a){return !isBlocked(a);});
+        collected=collected.concat(filtered);
+        if(ac.paging&&ac.paging.next){
+          var next=ac.paging.next.replace('access_token='+TOK,'access_token=TOKEN_PLACEHOLDER');
+          return fetchAccts(ac.paging.next,collected);
+        }
+        return collected;
+      });
+    }
+    var firstUrl=GFB+'/me/adaccounts?fields=id,name,account_id,currency,account_status&limit=200';
+    fetchAccts(firstUrl,[]).then(function(accts){
+      ALL_ACCTS=accts;
+      if(!silent&&document.getElementById('RT').checked)lsS('dgx_master_tok',TOK);
+      document.getElementById('CON-SCREEN').style.display='none';
+      document.getElementById('HUB').style.display='block';
+      document.getElementById('G-LED').classList.add('on');
+      document.getElementById('G-LBL').textContent=me.name+' ('+ALL_ACCTS.length+' accounts)';
+      document.getElementById('MASTER-LBL').textContent='Master: '+me.name+' — '+ALL_ACCTS.length+' accounts';
+      if(!silent)toast('Connected: '+me.name+'. '+ALL_ACCTS.length+' accounts loaded.');
+      renderHub();
+    });
+  }).catch(function(e){lsD('dgx_master_tok');TOK='';toast('Token error: '+e.message,'error');});
+}
+
+function openTokenSettings(){
+  showModal('<h3>Master token settings</h3><p>Update your master token here. One token connects all brands.</p>'+
+    '<label>New access token</label><input type="password" id="NT" placeholder="EAABsbCS4..."/>'+
+    '<label>Get from</label><p style="font-size:11px;color:var(--text2);margin-top:4px"><a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:var(--blue)">developers.facebook.com/tools/explorer</a></p>',
+    function(){var v=document.getElementById('NT').value.trim();if(!v){toast('Enter token','error');return;}TOK=v;lsS('dgx_master_tok',TOK);doConnect(false);});
+}
+
+function renderHub(){
+  var grid=document.getElementById('BGRID');
+  if(!BRANDS.length){grid.innerHTML='<div class="b-card add" onclick="addBrand()"><div class="add-plus">+</div><div class="add-lbl">Add brand</div></div>';return;}
+  var cards=BRANDS.map(function(b){
+    var acts=[];try{acts=JSON.parse(lsG('dgx_'+b.id+'_acts')||'[]');}catch(e){}
+    var hist=[];try{hist=JSON.parse(lsG('dgx_'+b.id+'_hist')||'[]');}catch(e){}
+    var pending=acts.filter(function(a){return a.status==='pending';}).length;
+    var c=clr(b.id);
+    // Find assigned account name
+    var acctName='-';
+    if(b.acctId){
+      ALL_ACCTS.forEach(function(a){if((a.account_id||a.id.replace('act_',''))===b.acctId)acctName=a.name||a.account_id;});
+    }
+    var hasAcct=!!b.acctId;
+    return '<div class="b-card" onclick="openBrand(\''+b.id+'\')">'+
+      '<button class="del-x" onclick="event.stopPropagation();delBrand(\''+b.id+'\')">x</button>'+
+      '<div class="b-ini" style="background:'+c+'">'+ini(b.name)+'</div>'+
+      '<div class="b-name">'+b.name+'</div>'+
+      '<div class="b-cat">'+(b.cat||'Meta Ads')+'</div>'+
+      '<div class="b-acct">'+(hasAcct?acctName:'No account assigned')+'</div>'+
+      '<div class="b-status-row"><div class="b-led'+(hasAcct?' ok':'')+'"></div><div class="b-status-lbl">'+(hasAcct?'Account assigned':'Needs account')+'</div></div>'+
+      '<div class="b-badges">'+
+      (pending?'<span class="bbadge bb-p">'+pending+' pending</span>':'')+
+      (hist.length?'<span class="bbadge bb-h">'+hist.length+' changes</span>':'')+
+      '</div></div>';
+  }).join('');
+  cards+='<div class="b-card add" onclick="addBrand()"><div class="add-plus">+</div><div class="add-lbl">Add brand</div></div>';
+  grid.innerHTML=cards;
+}
+
+function addBrand(){
+  // Build account options — all except blocked
+  var opts=ALL_ACCTS.map(function(a){return'<option value="'+(a.account_id||a.id.replace('act_',''))+'">'+a.name+' ('+( a.account_id||a.id.replace('act_',''))+')</option>';}).join('');
+  showModal('<h3>Add brand</h3><p>Give this brand a name and assign its ad account. Each brand only ever sees its own account.</p>'+
+    '<label>Brand name</label><input type="text" id="bN" placeholder="e.g. Aenak"/>'+
+    '<label>Category</label><input type="text" id="bC" placeholder="e.g. Bedding & Home Textiles"/>'+
+    '<label>Assign ad account</label><select id="bA"><option value="">-- Select account --</option>'+opts+'</select>',
+    function(){
+      var n=document.getElementById('bN').value.trim();
+      var c=document.getElementById('bC').value.trim();
+      var a=document.getElementById('bA').value;
+      if(!n){toast('Enter brand name','error');return;}
+      if(!a){toast('Select an ad account','error');return;}
+      // Double-check not blocked
+      if(BLOCKED_IDS.indexOf(a)>=0||BLOCKED_IDS.indexOf('act_'+a)>=0){toast('That account is blocked','error');return;}
+      var b={id:'b'+Date.now(),name:n,cat:c,acctId:a};
+      BRANDS.push(b);lsS('dgx_brands',JSON.stringify(BRANDS));
+      renderHub();toast('Brand added: '+n);
+      setTimeout(function(){openBrand(b.id);},300);
+    }
+  );
+}
+
+function delBrand(id){
+  if(!confirm('Delete this brand and all its data?'))return;
+  BRANDS=BRANDS.filter(function(b){return b.id!==id;});
+  lsS('dgx_brands',JSON.stringify(BRANDS));
+  ['acts','hist','sched'].forEach(function(k){lsD('dgx_'+id+'_'+k);});
+  renderHub();toast('Brand removed');
+}
+
+function openBrand(id){
+  curBrand=null;for(var i=0;i<BRANDS.length;i++){if(BRANDS[i].id===id){curBrand=BRANDS[i];break;}}
+  if(!curBrand)return;
+  D={campaigns:[],adsets:[],ads:[]};HKS=[];ACTS=[];HIST=[];
+  SEL={campaigns:new Set(),adsets:new Set(),ads:new Set()};
+  if(schedTmr){clearInterval(schedTmr);schedTmr=null;}
+  // Find the assigned account object
+  BRAND_ACCT=null;
+  ALL_ACCTS.forEach(function(a){
+    var aid=a.account_id||a.id.replace('act_','');
+    if(aid===curBrand.acctId)BRAND_ACCT=a;
+  });
+  var c=clr(curBrand.id);
+  document.getElementById('B-ICO').textContent=ini(curBrand.name);
+  document.getElementById('B-ICO').style.background=c;
+  document.getElementById('B-NAME').textContent=curBrand.name;
+  document.getElementById('B-SUB').textContent=curBrand.cat||'Meta Ads';
+  document.getElementById('HUB').style.display='none';
+  document.getElementById('APP').style.display='block';
+  document.getElementById('HUB-BTN').style.display='inline-flex';
+  document.getElementById('C-LBL').textContent=BRAND_ACCT?(BRAND_ACCT.name||BRAND_ACCT.account_id):'No account';
+  // Show account display — locked, no dropdown
+  var acctDisplay=document.getElementById('ACCT-DISPLAY');
+  if(BRAND_ACCT){
+    acctDisplay.innerHTML='<span class="acct-locked">'+( BRAND_ACCT.name||BRAND_ACCT.account_id)+'</span>';
+    document.getElementById('ACCT-INFO').textContent='('+( BRAND_ACCT.currency||'')+ ')';
+    document.getElementById('sc-ac').textContent=BRAND_ACCT.account_id||BRAND_ACCT.id.replace('act_','');
+  } else {
+    acctDisplay.innerHTML='<span style="color:var(--red);font-size:12px">No account assigned</span>';
+  }
+  try{ACTS=JSON.parse(lsG(bk('acts'))||'[]');}catch(e){ACTS=[];}
+  try{HIST=JSON.parse(lsG(bk('hist'))||'[]');}catch(e){HIST=[];}
+  rA();rH();uBadges();loadTasks();
+  goTab('campaigns');
+  initSched();
+}
+
+function goHub(){
+  document.getElementById('HUB').style.display='block';
+  document.getElementById('APP').style.display='none';
+  document.getElementById('HUB-BTN').style.display='none';
+  if(schedTmr){clearInterval(schedTmr);schedTmr=null;}
+  curBrand=null;BRAND_ACCT=null;
+  renderHub();
+}
+
+// ── API calls always use brand's single account ──
+function getActId(){return BRAND_ACCT?('act_'+(BRAND_ACCT.account_id||BRAND_ACCT.id.replace('act_',''))):'';} 
+function loadTab(){
+  if(['campaigns','adsets','ads'].indexOf(curTab)<0)return;
+  if(!BRAND_ACCT){toast('No account assigned to this brand','error');return;}
+  var tb=document.getElementById('tb-'+curTab);
+  if(tb)tb.innerHTML='<tr class="lrow"><td colspan="7">Loading...</td></tr>';
+  D[curTab]=[];SEL[curTab].clear();uBB(curTab);
+  var ac=getActId();
+  var p;
+  if(curTab==='campaigns')p=lC(ac);
+  else if(curTab==='adsets')p=lAS(ac);
+  else p=lA(ac);
+  p.then(function(){uStats();rd(curTab);}).catch(function(e){toast('Load error: '+e.message,'error');});
+}
+function lC(ac){var f='id,name,status,objective,daily_budget,lifetime_budget,insights.date_preset(last_30d){spend,impressions,actions}';return api('/'+ac+'/campaigns?fields='+f+'&limit=200').then(function(r){D.campaigns=(r.data||[]);document.getElementById('nb-c').textContent=D.campaigns.length;});}
+function lAS(ac){var f='id,name,status,daily_budget,lifetime_budget,optimization_goal,insights.date_preset(last_30d){spend,clicks,cpc}';return api('/'+ac+'/adsets?fields='+f+'&limit=200').then(function(r){D.adsets=(r.data||[]);document.getElementById('nb-as').textContent=D.adsets.length;});}
+function lA(ac){var f='id,name,status,website_url,insights.date_preset(last_30d){spend,impressions,clicks,ctr,cpc,actions,video_play_actions,video_p25_watched_actions}';return api('/'+ac+'/ads?fields='+f+'&limit=200').then(function(r){D.ads=(r.data||[]);document.getElementById('nb-a').textContent=D.ads.length;});}
+function loadAll(){if(!BRAND_ACCT)return Promise.resolve();var ac=getActId();return Promise.all([lC(ac),lAS(ac),lA(ac)]).then(function(){uStats();rd(curTab);});}
+function uStats(){var c=D.campaigns,s=D.adsets;document.getElementById('sc-t').textContent=c.length;document.getElementById('sc-a').textContent=c.filter(function(x){return x.status==='ACTIVE';}).length;var cs=c.reduce(function(t,d){return t+parseFloat((d.insights&&d.insights.data&&d.insights.data[0]&&d.insights.data[0].spend)||0);},0);document.getElementById('sc-s').textContent=cs>0?'$'+cs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,','):'-';document.getElementById('ss-t').textContent=s.length;document.getElementById('ss-a').textContent=s.filter(function(x){return x.status==='ACTIVE';}).length;var ss=s.reduce(function(t,d){return t+parseFloat((d.insights&&d.insights.data&&d.insights.data[0]&&d.insights.data[0].spend)||0);},0);document.getElementById('ss-s').textContent=ss>0?'$'+ss.toFixed(0):'-';var cp=s.map(function(d){return parseFloat((d.insights&&d.insights.data&&d.insights.data[0]&&d.insights.data[0].cpc)||0);}).filter(function(v){return v>0;});document.getElementById('ss-c').textContent=cp.length?'$'+(cp.reduce(function(a,b){return a+b;},0)/cp.length).toFixed(2):'-';document.getElementById('sa-t').textContent=D.ads.length;document.getElementById('sa-a').textContent=D.ads.filter(function(x){return x.status==='ACTIVE';}).length;var as2=D.ads.reduce(function(t,d){return t+parseFloat((d.insights&&d.insights.data&&d.insights.data[0]&&d.insights.data[0].spend)||0);},0);document.getElementById('sa-s').textContent=as2>0?'$'+as2.toFixed(0):'-';}
+function filt(t){var q=(document.getElementById('sr-'+t)||{value:''}).value.toLowerCase();var st=(document.getElementById('sf-'+t)||{value:''}).value;return D[t].filter(function(d){return(!st||d.status===st)&&(!q||d.name.toLowerCase().indexOf(q)>=0);});}
+function rd(t){var data=filt(t);var th=document.getElementById('th-'+t);var tb=document.getElementById('tb-'+t);if(!th||!tb)return;function chk(id){return'<input type="checkbox"'+(SEL[t].has(id)?' checked':'')+' onchange="tSel(\''+t+'\',\''+id+'\',this)"/>';}var allchk='<input type="checkbox" onchange="tAll(\''+t+'\',this)"/>';
+if(t==='campaigns'){th.innerHTML='<tr><th>'+allchk+'</th><th>Campaign</th><th>Status</th><th>Budget</th><th>Spend 30d</th><th>Hook</th><th></th></tr>';if(!data.length){tb.innerHTML='<tr class="erow"><td colspan="7">No campaigns</td></tr>';return;}tb.innerHTML=data.map(function(d){var i=(d.insights&&d.insights.data&&d.insights.data[0])||{};var hs=d._hs?'<span class="hb hb-'+d._hs.toLowerCase()+'">'+d._hs+'</span>':'<span class="hb hb-na">-</span>';return'<tr><td>'+chk(d.id)+'</td><td class="nc" title="'+d.name+'">'+d.name+'</td><td>'+spn(d.status)+'</td><td class="mo" id="bd-'+d.id+'" ondblclick="eB(\''+d.id+'\',\''+(d.daily_budget||d.lifetime_budget||0)+'\',\''+(d.daily_budget?'daily':'lifetime')+'\')" style="cursor:text">'+bf(d)+'</td><td class="mo">'+fs(i.spend)+'</td><td>'+hs+'</td><td><button class="btn sm '+(d.status==='ACTIVE'?'red':'grn')+'" onclick="tSt(\'campaigns\',\''+d.id+'\',\''+d.status+'\')">'+(d.status==='ACTIVE'?'Pause':'Activate')+'</button></td></tr>';}).join('');}
+else if(t==='adsets'){th.innerHTML='<tr><th>'+allchk+'</th><th>Ad set</th><th>Status</th><th>Budget</th><th>Optimization</th><th>Spend 30d</th><th></th></tr>';if(!data.length){tb.innerHTML='<tr class="erow"><td colspan="7">No ad sets</td></tr>';return;}tb.innerHTML=data.map(function(d){var i=(d.insights&&d.insights.data&&d.insights.data[0])||{};return'<tr><td>'+chk(d.id)+'</td><td class="nc" title="'+d.name+'">'+d.name+'</td><td>'+spn(d.status)+'</td><td class="mo" id="bd-'+d.id+'" ondblclick="eB(\''+d.id+'\',\''+(d.daily_budget||d.lifetime_budget||0)+'\',\''+(d.daily_budget?'daily':'lifetime')+'\')" style="cursor:text">'+bf(d)+'</td><td class="mu">'+(d.optimization_goal||'-').replace(/_/g,' ')+'</td><td class="mo">'+fs(i.spend)+'</td><td><button class="btn sm '+(d.status==='ACTIVE'?'red':'grn')+'" onclick="tSt(\'adsets\',\''+d.id+'\',\''+d.status+'\')">'+(d.status==='ACTIVE'?'Pause':'Activate')+'</button></td></tr>';}).join('');}
+else{th.innerHTML='<tr><th>'+allchk+'</th><th>Ad</th><th>Status</th><th>Hook type</th><th>Score</th><th>Spend 30d</th><th></th></tr>';if(!data.length){tb.innerHTML='<tr class="erow"><td colspan="7">No ads</td></tr>';return;}tb.innerHTML=data.map(function(d){var i=(d.insights&&d.insights.data&&d.insights.data[0])||{};var hs=d._hs?'<span class="hb hb-'+d._hs.toLowerCase()+'">'+d._hs+'</span>':'<span class="hb hb-na">-</span>';return'<tr><td>'+chk(d.id)+'</td><td class="nc" title="'+d.name+'">'+d.name+'</td><td>'+spn(d.status)+'</td><td class="mo" style="font-size:10px;color:var(--text3)">'+(d._ht||'-')+'</td><td>'+hs+'</td><td class="mo">'+fs(i.spend)+'</td><td><button class="btn sm '+(d.status==='ACTIVE'?'red':'grn')+'" onclick="tSt(\'ads\',\''+d.id+'\',\''+d.status+'\')">'+(d.status==='ACTIVE'?'Pause':'Activate')+'</button></td></tr>';}).join('');document.getElementById('sa-k').textContent=data.filter(function(x){return x._hs==='KILL';}).length||'-';}}
+function tSt(t,id,cur){var nx=cur==='ACTIVE'?'PAUSED':'ACTIVE';api('/'+id,'POST',{status:nx}).then(function(){var item=null;D[t].forEach(function(d){if(d.id===id)item=d;});if(item)item.status=nx;addH({type:nx==='PAUSED'?'pause':'activate',title:item?item.name:id,detail:t+' set to '+nx,source:'manual'});toast('Updated to '+nx);rd(t);}).catch(function(e){toast('Error: '+e.message,'error');});}
+function eB(id,cur,type){var cell=document.getElementById('bd-'+id);if(!cell)return;var v=cur?(parseFloat(cur)/100).toFixed(2):'';cell.innerHTML='<input class="ei" type="number" value="'+v+'" step="0.01" min="1" id="bi-'+id+'" onblur="svB(\''+id+'\',\''+type+'\',this)" onkeydown="if(event.key===\'Enter\')this.blur();if(event.key===\'Escape\')rd(curTab)"/>';setTimeout(function(){var i=document.getElementById('bi-'+id);if(i){i.focus();i.select();}},40);}
+function svB(id,type,inp){var v=parseFloat(inp.value);if(isNaN(v)||v<1){rd(curTab);return;}var c=Math.round(v*100),f=type==='daily'?'daily_budget':'lifetime_budget';var body={};body[f]=c;api('/'+id,'POST',body).then(function(){var all=D.campaigns.concat(D.adsets,D.ads),item=null;all.forEach(function(d){if(d.id===id)item=d;});if(item)item[f]=c;addH({type:'budget',title:item?item.name:id,detail:'$'+v.toFixed(2)+' '+type,source:'manual'});toast('Budget updated');rd(curTab);}).catch(function(e){toast('Error: '+e.message,'error');rd(curTab);});}
+function tSel(t,id,cb){if(cb.checked)SEL[t].add(id);else SEL[t].delete(id);uBB(t);}
+function tAll(t,cb){var data=filt(t);if(cb.checked)data.forEach(function(d){SEL[t].add(d.id);});else SEL[t].clear();uBB(t);rd(t);}
+function cls(t){SEL[t].clear();uBB(t);rd(t);}
+function uBB(t){var bar=document.getElementById('bb-'+t);if(!bar)return;var n=SEL[t].size;var c=document.getElementById('bc-'+t);if(c)c.textContent=n+' selected';bar.style.display=n>0?'flex':'none';}
+function ba(t,st){var ids=[...SEL[t]],done=0,fail=0;var ps=ids.map(function(id){return api('/'+id,'POST',{status:st}).then(function(){done++;}).catch(function(){fail++;});});Promise.all(ps).then(function(){D[t].forEach(function(d){if(SEL[t].has(d.id))d.status=st;});addH({type:st==='PAUSED'?'pause':'activate',title:'Bulk '+t+': '+done,detail:'Set to '+st,source:'manual'});toast(done+' updated');cls(t);rd(t);});}
+function oBB(t){showModal('<h3>Set budget</h3><p>'+SEL[t].size+' selected '+t+'</p><label>Type</label><select id="mBT"><option value="daily_budget">Daily</option><option value="lifetime_budget">Lifetime</option></select><label>Amount (INR)</label><input type="number" id="mBA" placeholder="500" step="1" min="1"/>',function(){var type=document.getElementById('mBT').value;var v=parseFloat(document.getElementById('mBA').value);if(isNaN(v)||v<1)return;var c=Math.round(v*100);var body={};body[type]=c;var ids=[...SEL[t]],done=0,fail=0;var ps=ids.map(function(id){return api('/'+id,'POST',body).then(function(){done++;}).catch(function(){fail++;});});Promise.all(ps).then(function(){D[t].forEach(function(x){if(SEL[t].has(x.id))x[type]=c;});addH({type:'budget',title:'Bulk budget: '+done+' '+t,detail:'Rs.'+v,source:'manual'});toast('Budget set for '+done);cls(t);rd(t);});});}
+
+// ══════════════════════════════════════════════
+// FULL AD CREATION FUNNEL
+// Campaign → Ad Set → Ad (Standard / Catalogue)
+// ══════════════════════════════════════════════
+
+function newCamp(){
+  if(!BRAND_ACCT){toast('No account assigned','error');return;}
+  var ac=getActId();
+  var modalHtml=
+    '<h3>New campaign</h3>'+
+    '<p>Account: <strong>'+BRAND_ACCT.name+'</strong></p>'+
+    '<label>Campaign name</label>'+
+    '<input type="text" id="cN" placeholder="e.g. Summer Sale 2025"/>'+
+    '<label>Objective</label>'+
+    '<select id="cO">'+
+      '<option value="OUTCOME_SALES">Sales (Conversions)</option>'+
+      '<option value="OUTCOME_TRAFFIC">Traffic</option>'+
+      '<option value="OUTCOME_AWARENESS">Awareness</option>'+
+      '<option value="OUTCOME_ENGAGEMENT">Engagement</option>'+
+      '<option value="OUTCOME_LEADS">Leads</option>'+
+      '<option value="OUTCOME_APP_PROMOTION">App Promotion</option>'+
+    '</select>'+
+    '<label>Budget type</label>'+
+    '<select id="cBT">'+
+      '<option value="daily">Daily budget (INR)</option>'+
+      '<option value="lifetime">Lifetime budget (INR)</option>'+
+      '<option value="cbo_off">No campaign budget (set on ad set)</option>'+
+    '</select>'+
+    '<label>Budget amount (INR)</label>'+
+    '<input type="number" id="cB" placeholder="500" step="1" min="1"/>'+
+    '<label>Start immediately?</label>'+
+    '<select id="cST"><option value="PAUSED">Paused (review first)</option><option value="ACTIVE">Active (go live now)</option></select>';
+
+  showModal(modalHtml, function(){
+    var n=document.getElementById('cN').value.trim();
+    var o=document.getElementById('cO').value;
+    var bt=document.getElementById('cBT').value;
+    var b=parseFloat(document.getElementById('cB').value);
+    var st=document.getElementById('cST').value;
+    if(!n){toast('Enter campaign name','error');return;}
+    var body={name:n,objective:o,status:st,special_ad_categories:[]};
+    if(bt==='daily'&&b>=1) body.daily_budget=Math.round(b*100);
+    else if(bt==='lifetime'&&b>=1) body.lifetime_budget=Math.round(b*100);
+    api('/'+ac+'/campaigns','POST',body).then(function(r){
+      addH({type:'activate',title:'Campaign: '+n,detail:o+' | '+bt+' Rs.'+b,source:'manual'});
+      toast('Campaign created — add an ad set now');
+      loadTab();
+      // Prompt to continue with ad set
+      setTimeout(function(){
+        if(confirm('Campaign "'+n+'" created! Create an ad set for it now?')){
+          newAdSet(r.id, n, o);
+        }
+      },400);
+    }).catch(function(e){toast('Campaign error: '+e.message,'error');});
+  });
+}
+
+function newAdSet(campId, campName, objective){
+  if(!BRAND_ACCT){toast('No account assigned','error');return;}
+  var ac=getActId();
+  // Fetch pages for the account
+  var pagesPromise=api('/me/accounts?fields=id,name&limit=50').catch(function(){return {data:[]};});
+  pagesPromise.then(function(pages){
+    var pageOpts=(pages.data||[]).map(function(p){
+      return '<option value="'+p.id+'">'+p.name+'</option>';
+    }).join('');
+    if(!pageOpts) pageOpts='<option value="">Enter Page ID manually</option>';
+
+    var modalHtml=
+      '<h3>New ad set</h3>'+
+      '<p>Campaign: <strong>'+campName+'</strong></p>'+
+      '<label>Ad set name</label>'+
+      '<input type="text" id="asN" placeholder="e.g. Women 25-44 India"/>'+
+      '<label>Optimization goal</label>'+
+      '<select id="asOG">'+
+        '<option value="OFFSITE_CONVERSIONS">Conversions (Purchase)</option>'+
+        '<option value="LINK_CLICKS">Link Clicks</option>'+
+        '<option value="LANDING_PAGE_VIEWS">Landing Page Views</option>'+
+        '<option value="REACH">Reach</option>'+
+        '<option value="IMPRESSIONS">Impressions</option>'+
+        '<option value="LEAD_GENERATION">Lead Generation</option>'+
+        '<option value="VALUE">Value / ROAS</option>'+
+      '</select>'+
+      '<label>Billing event</label>'+
+      '<select id="asBE">'+
+        '<option value="IMPRESSIONS">Impressions (CPM)</option>'+
+        '<option value="LINK_CLICKS">Link Clicks (CPC)</option>'+
+      '</select>'+
+      '<label>Daily budget (INR) — leave 0 if campaign has budget</label>'+
+      '<input type="number" id="asB" placeholder="0" step="1" min="0" value="0"/>'+
+      '<label>Targeting — Countries (comma separated)</label>'+
+      '<input type="text" id="asGeo" placeholder="IN" value="IN"/>'+
+      '<label>Age min / max</label>'+
+      '<div style="display:flex;gap:8px">'+
+        '<input type="number" id="asAMin" placeholder="18" value="18" min="13" max="65"/>'+
+        '<input type="number" id="asAMax" placeholder="55" value="55" min="13" max="65"/>'+
+      '</div>'+
+      '<label>Gender</label>'+
+      '<select id="asGen">'+
+        '<option value="0">All genders</option>'+
+        '<option value="1">Men only</option>'+
+        '<option value="2">Women only</option>'+
+      '</select>'+
+      '<label>Pixel ID (for conversion events)</label>'+
+      '<input type="text" id="asPx" placeholder="Leave blank if unsure"/>'+
+      '<label>Facebook Page</label>'+
+      '<select id="asPg">'+pageOpts+'</select>';
+
+    showModal(modalHtml, function(){
+      var asName=document.getElementById('asN').value.trim();
+      var og=document.getElementById('asOG').value;
+      var be=document.getElementById('asBE').value;
+      var asB=parseFloat(document.getElementById('asB').value)||0;
+      var geo=(document.getElementById('asGeo').value||'IN').split(',').map(function(g){return g.trim().toUpperCase();}).filter(Boolean);
+      var amin=parseInt(document.getElementById('asAMin').value)||18;
+      var amax=parseInt(document.getElementById('asAMax').value)||55;
+      var gen=parseInt(document.getElementById('asGen').value)||0;
+      var px=document.getElementById('asPx').value.trim();
+      var pg=document.getElementById('asPg').value;
+      if(!asName){toast('Enter ad set name','error');return;}
+
+      var targeting={geo_locations:{countries:geo},age_min:amin,age_max:amax};
+      if(gen>0) targeting.genders=[gen];
+
+      var asBody={
+        name:asName,
+        campaign_id:campId,
+        optimization_goal:og,
+        billing_event:be,
+        status:'PAUSED',
+        targeting:targeting
+      };
+      if(asB>=1) asBody.daily_budget=Math.round(asB*100);
+      if(px&&og==='OFFSITE_CONVERSIONS'){
+        asBody.promoted_object={pixel_id:px,custom_event_type:'PURCHASE'};
+      }
+
+      api('/'+ac+'/adsets','POST',asBody).then(function(r){
+        addH({type:'activate',title:'Ad set: '+asName,detail:og+' | '+geo.join(','),source:'manual'});
+        toast('Ad set created — add an ad now');
+        if(curTab==='adsets')loadTab();
+        setTimeout(function(){
+          if(confirm('Ad set "'+asName+'" created! Create an ad for it now?')){
+            showAdCreator(r.id, asName, pg);
+          }
+        },400);
+      }).catch(function(e){toast('Ad set error: '+e.message,'error');});
+    });
+  });
+}
+
+function newAdSetFromTab(){
+  if(!BRAND_ACCT){toast('No account assigned','error');return;}
+  // Pick campaign first
+  if(!D.campaigns.length){toast('Load Campaigns tab first','error');return;}
+  var opts=D.campaigns.map(function(c){
+    return '<option value="'+c.id+'" data-obj="'+(c.objective||'OUTCOME_SALES')+'">'+c.name+'</option>';
+  }).join('');
+  showModal(
+    '<h3>Select campaign</h3><p>Which campaign should this ad set go into?</p>'+
+    '<label>Campaign</label><select id="pickedCamp">'+opts+'</select>',
+    function(){
+      var sel=document.getElementById('pickedCamp');
+      var cId=sel.value;
+      var cName=sel.options[sel.selectedIndex].text;
+      var obj=sel.options[sel.selectedIndex].getAttribute('data-obj')||'OUTCOME_SALES';
+      newAdSet(cId, cName, obj);
+    }
+  );
+}
+
+function showAdCreator(adsetId, adsetName, pageId){
+  var modalHtml=
+    '<h3>New ad</h3>'+
+    '<p>Ad set: <strong>'+adsetName+'</strong></p>'+
+    '<label>Ad type</label>'+
+    '<select id="adType" onchange="toggleAdType()">'+
+      '<option value="single">Single image / video</option>'+
+      '<option value="catalogue">Catalogue / DPA</option>'+
+      '<option value="carousel">Carousel</option>'+
+    '</select>'+
+    '<div id="adTypeFields">'+renderSingleAdFields()+'</div>'+
+    '<label>Ad status</label>'+
+    '<select id="adSt"><option value="PAUSED">Paused</option><option value="ACTIVE">Active</option></select>';
+  showModal(modalHtml, function(){
+    var adType=document.getElementById('adType').value;
+    if(adType==='single') createSingleAd(adsetId, adsetName, pageId);
+    else if(adType==='catalogue') createCatalogueAd(adsetId, adsetName, pageId);
+    else if(adType==='carousel') createCarouselAd(adsetId, adsetName, pageId);
+  });
+}
+
+function toggleAdType(){
+  var t=document.getElementById('adType').value;
+  var f=document.getElementById('adTypeFields');
+  if(!f)return;
+  if(t==='single') f.innerHTML=renderSingleAdFields();
+  else if(t==='catalogue') f.innerHTML=renderCatalogueFields();
+  else if(t==='carousel') f.innerHTML=renderCarouselFields();
+}
+
+function renderSingleAdFields(){
+  return '<label>Ad name</label><input type="text" id="adName" placeholder="e.g. Dispatch Video May"/>'+
+    '<label>Page ID</label><input type="text" id="adPg" placeholder="Your Facebook Page ID"/>'+
+    '<label>Creative — Image or video URL (public URL or FB asset ID)</label>'+
+    '<input type="text" id="adImg" placeholder="https://... or fb_image_hash"/>'+
+    '<label>Primary text (ad copy)</label>'+
+    '<textarea id="adBody" style="width:100%;height:70px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:8px;outline:none;resize:vertical" placeholder="Write your ad copy here..."></textarea>'+
+    '<label>Headline</label><input type="text" id="adHL" placeholder="e.g. Shop handmade quilts"/>'+
+    '<label>Description (optional)</label><input type="text" id="adDesc" placeholder="Free shipping on all orders"/>'+
+    '<label>Destination URL</label><input type="text" id="adURL" placeholder="https://yourstore.com/collection"/>'+
+    '<label>Call to action</label>'+
+    '<select id="adCTA">'+
+      '<option value="SHOP_NOW">Shop Now</option>'+
+      '<option value="LEARN_MORE">Learn More</option>'+
+      '<option value="SIGN_UP">Sign Up</option>'+
+      '<option value="GET_OFFER">Get Offer</option>'+
+      '<option value="ORDER_NOW">Order Now</option>'+
+      '<option value="DOWNLOAD">Download</option>'+
+      '<option value="CONTACT_US">Contact Us</option>'+
+    '</select>';
+}
+
+function renderCatalogueFields(){
+  return '<label>Ad name</label><input type="text" id="adName" placeholder="e.g. DPA Retargeting"/>'+
+    '<label>Product Catalogue ID</label><input type="text" id="catId" placeholder="Your catalogue ID from Meta Business Suite"/>'+
+    '<label>Page ID</label><input type="text" id="adPg" placeholder="Your Facebook Page ID"/>'+
+    '<label>Primary text</label>'+
+    '<textarea id="adBody" style="width:100%;height:60px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:8px;outline:none;resize:vertical" placeholder="{{product.name}} — shop now"></textarea>'+
+    '<label>Headline (use dynamic fields)</label><input type="text" id="adHL" placeholder="{{product.name}}"/>'+
+    '<label>Destination URL</label><input type="text" id="adURL" placeholder="{{product.url}} or your store URL"/>'+
+    '<label>Call to action</label>'+
+    '<select id="adCTA"><option value="SHOP_NOW">Shop Now</option><option value="LEARN_MORE">Learn More</option><option value="ORDER_NOW">Order Now</option></select>';
+}
+
+function renderCarouselFields(){
+  return '<label>Ad name</label><input type="text" id="adName" placeholder="e.g. Collection Carousel"/>'+
+    '<label>Page ID</label><input type="text" id="adPg" placeholder="Your Facebook Page ID"/>'+
+    '<label>Primary text</label>'+
+    '<textarea id="adBody" style="width:100%;height:60px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:8px;outline:none;resize:vertical" placeholder="Explore our collection"></textarea>'+
+    '<label>Card 1 — Image URL + Headline + URL</label>'+
+    '<input type="text" id="c1img" placeholder="https://image1.jpg"/>'+
+    '<input type="text" id="c1hl" placeholder="Quilt Card" style="margin-top:5px"/>'+
+    '<input type="text" id="c1url" placeholder="https://store.com/quilts" style="margin-top:5px"/>'+
+    '<label>Card 2</label>'+
+    '<input type="text" id="c2img" placeholder="https://image2.jpg"/>'+
+    '<input type="text" id="c2hl" placeholder="Dohar Card" style="margin-top:5px"/>'+
+    '<input type="text" id="c2url" placeholder="https://store.com/dohars" style="margin-top:5px"/>'+
+    '<label>Card 3 (optional)</label>'+
+    '<input type="text" id="c3img" placeholder="https://image3.jpg"/>'+
+    '<input type="text" id="c3hl" placeholder="Bedsheet Card" style="margin-top:5px"/>'+
+    '<input type="text" id="c3url" placeholder="https://store.com/bedsheets" style="margin-top:5px"/>'+
+    '<label>Call to action</label>'+
+    '<select id="adCTA"><option value="SHOP_NOW">Shop Now</option><option value="LEARN_MORE">Learn More</option><option value="ORDER_NOW">Order Now</option></select>';
+}
+
+function createSingleAd(adsetId, adsetName, defaultPage){
+  var name=document.getElementById('adName').value.trim();
+  var pg=document.getElementById('adPg').value.trim()||defaultPage||'';
+  var img=document.getElementById('adImg').value.trim();
+  var body=document.getElementById('adBody').value.trim();
+  var hl=document.getElementById('adHL').value.trim();
+  var desc=document.getElementById('adDesc').value.trim();
+  var url=document.getElementById('adURL').value.trim();
+  var cta=document.getElementById('adCTA').value;
+  var st=document.getElementById('adSt').value;
+  if(!name||!url||!body){toast('Ad name, copy and URL are required','error');return;}
+  var ac=getActId();
+  var linkData={link:url,message:body,call_to_action:{type:cta,value:{link:url}}};
+  if(hl) linkData.name=hl;
+  if(desc) linkData.description=desc;
+  if(img) linkData.picture=img;
+  var storySpec={};
+  if(pg) storySpec.page_id=pg;
+  storySpec.link_data=linkData;
+  api('/'+ac+'/adcreatives','POST',{name:name+' Creative',object_story_spec:storySpec}).then(function(cr){
+    return api('/'+ac+'/ads','POST',{name:name,adset_id:adsetId,creative:{creative_id:cr.id},status:st});
+  }).then(function(ad){
+    addH({type:'activate',title:'Ad created: '+name,detail:'Single | '+url+' | ID:'+ad.id,source:'manual'});
+    toast('Ad created: '+name);
+    if(curTab==='ads')loadTab();
+  }).catch(function(e){toast('Ad error: '+e.message,'error');});
+}
+
+function createCatalogueAd(adsetId, adsetName, defaultPage){
+  var name=document.getElementById('adName').value.trim();
+  var catId=document.getElementById('catId').value.trim();
+  var pg=document.getElementById('adPg').value.trim()||defaultPage||'';
+  var body=document.getElementById('adBody').value.trim();
+  var hl=document.getElementById('adHL').value.trim();
+  var url=document.getElementById('adURL').value.trim();
+  var cta=document.getElementById('adCTA').value;
+  var st=document.getElementById('adSt').value;
+  if(!name||!catId){toast('Ad name and Catalogue ID required','error');return;}
+  var ac=getActId();
+  var templateData={
+    message:body||'{{product.name}}',
+    link:url||'{{product.url}}',
+    call_to_action:{type:cta,value:{link:url||'{{product.url}}'}},
+    name:hl||'{{product.name}}'
+  };
+  var storySpec={};
+  if(pg) storySpec.page_id=pg;
+  storySpec.template_data=templateData;
+  api('/'+ac+'/adcreatives','POST',{
+    name:name+' Creative',
+    object_story_spec:storySpec,
+    product_set_id:catId
+  }).then(function(cr){
+    return api('/'+ac+'/ads','POST',{name:name,adset_id:adsetId,creative:{creative_id:cr.id},status:st});
+  }).then(function(ad){
+    addH({type:'activate',title:'Catalogue ad: '+name,detail:'DPA | Cat:'+catId+' | ID:'+ad.id,source:'manual'});
+    toast('Catalogue ad created: '+name);
+    if(curTab==='ads')loadTab();
+  }).catch(function(e){toast('Catalogue ad error: '+e.message,'error');});
+}
+
+function createCarouselAd(adsetId, adsetName, defaultPage){
+  var name=document.getElementById('adName').value.trim();
+  var pg=document.getElementById('adPg').value.trim()||defaultPage||'';
+  var body=document.getElementById('adBody').value.trim();
+  var cta=document.getElementById('adCTA').value;
+  var st=document.getElementById('adSt').value;
+  if(!name){toast('Enter ad name','error');return;}
+  var cards=[];
+  for(var i=1;i<=3;i++){
+    var imgEl=document.getElementById('c'+i+'img');
+    var hlEl=document.getElementById('c'+i+'hl');
+    var urlEl=document.getElementById('c'+i+'url');
+    if(!imgEl||!imgEl.value.trim())continue;
+    var card={picture:imgEl.value.trim(),link:urlEl.value.trim()||'',call_to_action:{type:cta,value:{link:urlEl.value.trim()||''}}};
+    if(hlEl&&hlEl.value.trim())card.name=hlEl.value.trim();
+    cards.push(card);
+  }
+  if(!cards.length){toast('Add at least 1 carousel card with an image','error');return;}
+  var ac=getActId();
+  var storySpec={};
+  if(pg) storySpec.page_id=pg;
+  storySpec.link_data={message:body||'Explore our collection',child_attachments:cards,multi_share_optimized:true};
+  api('/'+ac+'/adcreatives','POST',{name:name+' Creative',object_story_spec:storySpec}).then(function(cr){
+    return api('/'+ac+'/ads','POST',{name:name,adset_id:adsetId,creative:{creative_id:cr.id},status:st});
+  }).then(function(ad){
+    addH({type:'activate',title:'Carousel ad: '+name,detail:cards.length+' cards | ID:'+ad.id,source:'manual'});
+    toast('Carousel created: '+name);
+    if(curTab==='ads')loadTab();
+  }).catch(function(e){toast('Carousel error: '+e.message,'error');});
+}
+
+
+function newAdFromTab(){
+  if(!BRAND_ACCT){toast('No account assigned','error');return;}
+  if(!D.adsets.length&&!D.campaigns.length){toast('Load Ad sets tab first','error');return;}
+  // pick adset
+  var src=D.adsets.length?D.adsets:[];
+  if(!src.length){
+    toast('Load Ad sets tab first to pick a target ad set','error');return;
+  }
+  var opts=src.map(function(s){return '<option value="'+s.id+'">'+s.name+'</option>';}).join('');
+  showModal(
+    '<h3>Select ad set</h3><p>Which ad set should this ad go into?</p>'+
+    '<label>Ad set</label><select id="pickedAS">'+opts+'</select>',
+    function(){
+      var sel=document.getElementById('pickedAS');
+      var asId=sel.value;
+      var asName=sel.options[sel.selectedIndex].text;
+      showAdCreator(asId, asName, '');
+    }
+  );
+}
+
+var HRS=[{type:'DISPATCH',kw:['dispatch','packing','pack','order','shipping','delivery']},{type:'ASPIRATION',kw:['sleep','comfort','cozy','beautiful','lifestyle','morning','resolution','important']},{type:'SEASONAL',kw:['holi','diwali','christmas','eid','summer','winter','women','season','festive','monsoon']},{type:'EDUCATIONAL',kw:['vs','difference','which','comparison','dohar','kaunsa','versus']},{type:'TRENDING',kw:['music','trending','reel','viral','beat']}];
+function clsH(name){var n=name.toLowerCase();for(var i=0;i<HRS.length;i++){var r=HRS[i];for(var j=0;j<r.kw.length;j++){if(n.indexOf(r.kw[j])>=0)return r.type;}}return'UNCLASSIFIED';}
+function scoreH(ins){var spend=parseFloat((ins&&ins.spend)||0);var actions=ins&&ins.actions||[];var purch=null;actions.forEach(function(a){if(a.action_type==='offsite_conversion.fb_pixel_purchase')purch=a;});var purchases=purch?parseInt(purch.value||0):0;var vpa=ins&&ins.video_play_actions||[];var plays=vpa[0]?vpa[0].value:0;var p25a=ins&&ins.video_p25_watched_actions||[];var p25=p25a[0]?p25a[0].value:0;var hookRate=plays>0?p25/plays:0;var rev=null;actions.forEach(function(a){if(a.action_type==='offsite_conversion.fb_pixel_purchase_value')rev=a;});var roas=spend>0?(rev?parseFloat(rev.value||0):0)/spend:0;if(spend>10&&purchases===0&&roas===0)return{score:'KILL',roas:roas,hookRate:hookRate,spend:spend,purchases:purchases};if(roas>=6&&hookRate>=0.1)return{score:'STRONG',roas:roas,hookRate:hookRate,spend:spend,purchases:purchases};if(roas>=5&&purchases>=5)return{score:'STRONG',roas:roas,hookRate:hookRate,spend:spend,purchases:purchases};if(roas>=3)return{score:'MODERATE',roas:roas,hookRate:hookRate,spend:spend,purchases:purchases};if(roas>=2&&hookRate>=0.15)return{score:'MODERATE',roas:roas,hookRate:hookRate,spend:spend,purchases:purchases};if(spend>5&&roas>0)return{score:'MODERATE',roas:roas,hookRate:hookRate,spend:spend,purchases:purchases};return{score:'KILL',roas:roas,hookRate:hookRate,spend:spend,purchases:purchases};}
+function runHooks(){var src=D.ads.length>0?D.ads:D.campaigns;if(!src.length){toast('Load data first');return;}var btn=document.getElementById('BRH');btn.disabled=true;btn.textContent='Analysing...';setTimeout(function(){HKS=[];var cnt={};src.forEach(function(ad){var ins=(ad.insights&&ad.insights.data&&ad.insights.data[0])||{};var ht=clsH(ad.name);var res=scoreH(ins);ad._ht=ht;ad._hs=res.score;cnt[ht]=(cnt[ht]||0)+1;HKS.push({id:ad.id,name:ad.name,status:ad.status,ht:ht,score:res.score,roas:res.roas,hookRate:res.hookRate*100,spend:res.spend,purchases:res.purchases});});document.getElementById('nb-h').textContent=HKS.length;rHooksUI(cnt);genActs();btn.disabled=false;btn.textContent='Re-run';rd('campaigns');rd('ads');toast('Hook analysis: '+HKS.length+' ads');},300);}
+function rHooksUI(cnt){document.getElementById('HA-SUM').style.display='grid';[['DISPATCH','d'],['ASPIRATION','a'],['SEASONAL','s'],['EDUCATIONAL','e'],['TRENDING','t']].forEach(function(p){var el=document.getElementById('hs-'+p[1]);if(el)el.textContent=cnt[p[0]]||0;});document.getElementById('HE').style.display='none';document.getElementById('HT').style.display='block';document.getElementById('th-hooks').innerHTML='<tr><th>Ad name</th><th>Hook type</th><th>Score</th><th>ROAS</th><th>Hook rate</th><th>Spend</th><th>Purchases</th></tr>';var sorted=[].concat(HKS).sort(function(a,b){var m={KILL:0,MODERATE:1,STRONG:2};return(m[b.score]||0)-(m[a.score]||0);});document.getElementById('tb-hooks').innerHTML=sorted.map(function(h){return'<tr><td class="nc" style="max-width:185px" title="'+h.name+'">'+h.name+'</td><td class="mo" style="font-size:10px;color:var(--text3)">'+h.ht+'</td><td><span class="hb hb-'+h.score.toLowerCase()+'">'+h.score+'</span></td><td class="mo">'+(h.roas>0?h.roas.toFixed(1)+'x':'-')+'</td><td class="mo">'+(h.hookRate>0?h.hookRate.toFixed(1)+'%':'-')+'</td><td class="mo">'+(h.spend>0?'$'+h.spend.toFixed(2):'-')+'</td><td class="mo">'+(h.purchases||'-')+'</td></tr>';}).join('');var ins=[];var kills=HKS.filter(function(h){return h.score==='KILL';});var strongs=HKS.filter(function(h){return h.score==='STRONG';});var waste=kills.reduce(function(s,h){return s+h.spend;},0);var byFW={};HKS.forEach(function(h){if(!byFW[h.ht])byFW[h.ht]=[];byFW[h.ht].push(h);});var fwArr=Object.keys(byFW).map(function(k){var v=byFW[k];return{fw:k,avg:v.reduce(function(s,h){return s+h.roas;},0)/v.length,count:v.length};});fwArr.sort(function(a,b){return b.avg-a.avg;});var top=fwArr[0];if(top)ins.push({col:'var(--green)',t:top.fw+' = top framework',b:top.count+' ads avg '+top.avg.toFixed(1)+'x ROAS.',a:'Keep 2+ fresh '+top.fw+' creatives in rotation.'});if(kills.length)ins.push({col:'var(--red)',t:kills.length+' ads should be paused',b:'$'+waste.toFixed(2)+' wasted.',a:'Review Actionables and approve pause.'});if(strongs.length)ins.push({col:'var(--blue)',t:'Top: "'+strongs[0].name.substring(0,35)+'..."',b:strongs[0].roas.toFixed(1)+'x ROAS, '+strongs[0].ht+' hook.',a:'Brief a new creative replicating this hook.'});var hiE=document.getElementById('HI');hiE.style.display='flex';hiE.innerHTML=ins.map(function(i){return'<div class="ins-card"><div class="ins-hdr"><div class="ins-dot" style="background:'+i.col+'"></div><div class="ins-title">'+i.t+'</div></div><div class="ins-body">'+i.b+'</div><div class="ins-act">Action: '+i.a+'</div></div>';}).join('');}
+function genActs(){var newA=[];HKS.filter(function(h){return h.score==='KILL'&&h.status==='ACTIVE';}).forEach(function(h){if(ACTS.filter(function(a){return a.adId===h.id&&a.type==='pause'&&a.status!=='rejected';}).length)return;var auto=document.getElementById('R4')&&document.getElementById('R4').checked&&h.purchases===0;newA.push({id:'a'+Date.now()+'_'+Math.random().toString(36).slice(2,6),adId:h.id,adName:h.name,type:'pause',title:'Pause: "'+h.name.substring(0,42)+'..."',reason:'KILL — $'+h.spend.toFixed(2)+' spent, '+h.purchases+' purchases, '+h.roas.toFixed(1)+'x ROAS.',tags:[h.ht,'KILL'],status:auto?'approved':'pending',createdAt:new Date().toISOString(),source:'hook-analysis'});});if(document.getElementById('R2')&&document.getElementById('R2').checked){HKS.filter(function(h){return h.hookRate>0&&h.hookRate<8&&h.status==='ACTIVE'&&h.score!=='KILL';}).forEach(function(h){if(ACTS.filter(function(a){return a.adId===h.id&&a.type==='creative';}).length)return;newA.push({id:'a'+Date.now()+'_'+Math.random().toString(36).slice(2,6),adId:h.id,adName:h.name,type:'creative',title:'Low hook rate: "'+h.name.substring(0,36)+'..."',reason:'Hook rate '+h.hookRate.toFixed(1)+'% below 8%.',tags:[h.ht,'LOW HOOK RATE'],status:'pending',createdAt:new Date().toISOString(),source:'hook-analysis'});});}ACTS=newA.concat(ACTS);lsS(bk('acts'),JSON.stringify(ACTS.slice(0,200)));rA();uBadges();if(newA.length)toast(newA.length+' actionables for '+curBrand.name,'amber');}
+function rA(){var wrap=document.getElementById('AL');var p=ACTS.filter(function(a){return a.status==='pending';}).length;document.getElementById('nb-act').textContent=ACTS.length||'-';document.getElementById('ADOT').style.display=p>0?'inline':'none';var bex=document.getElementById('BEX');if(bex)bex.disabled=ACTS.filter(function(a){return a.status==='approved';}).length===0;if(!ACTS.length){wrap.innerHTML='<div class="empty-box">No actionables yet.</div>';return;}var ico={pause:'-',activate:'+',budget:'$',creative:'~'};wrap.innerHTML='<div class="act-list">'+ACTS.map(function(a){return'<div class="act-card '+a.status+'" id="ac-'+a.id+'"><div class="act-ico '+a.type+'">'+(ico[a.type]||'*')+'</div><div class="act-body"><div class="act-title">'+a.title+'</div><div class="act-reason">'+a.reason+'</div><div class="act-tags">'+a.tags.map(function(t){return'<span class="atag">'+t+'</span>';}).join('')+'<span class="atag">'+new Date(a.createdAt).toLocaleDateString()+'</span></div></div><div class="act-btns">'+(a.status==='pending'?'<button class="btn sm grn" onclick="sAS(\''+a.id+'\',\'approved\')">Approve</button><button class="btn sm red" onclick="sAS(\''+a.id+'\',\'rejected\')">Reject</button>':'')+(a.status==='approved'?'<span class="asb asb-a">APPROVED</span>':'')+(a.status==='rejected'?'<span class="asb asb-r">REJECTED</span>':'')+(a.status==='executed'?'<span class="asb asb-e">EXECUTED</span>':'')+' </div></div>';}).join('')+'</div>';}
+function sAS(id,st){var a=null;ACTS.forEach(function(x){if(x.id===id)a=x;});if(a){a.status=st;lsS(bk('acts'),JSON.stringify(ACTS));rA();uBadges();if(st==='approved')toast('Approved — click Execute','info');}}
+function execApproved(){var appr=ACTS.filter(function(a){return a.status==='approved';});if(!appr.length)return;showModal('<h3>Execute '+appr.length+' actions</h3><p>Changes to '+curBrand.name+':</p><ul class="clist">'+appr.map(function(a){return'<li><span>'+(a.type==='pause'?'-':'+')+'</span><span style="flex:1">'+a.title+'</span></li>';}).join('')+'</ul>',function(){var done=0,fail=0;var ps=appr.map(function(a){var p;if(a.type==='pause')p=api('/'+a.adId,'POST',{status:'PAUSED'});else if(a.type==='activate')p=api('/'+a.adId,'POST',{status:'ACTIVE'});else return Promise.resolve();return p.then(function(){a.status='executed';addH({type:a.type,title:a.adName||a.title,detail:a.reason.substring(0,70),source:'actionable'});done++;}).catch(function(){fail++;a.status='pending';});});Promise.all(ps).then(function(){lsS(bk('acts'),JSON.stringify(ACTS));rA();uBadges();toast((done+appr.length-fail)+' executed');});});}
+function clearActs(){ACTS=[];lsS(bk('acts'),'[]');rA();uBadges();}
+function uBadges(){var p=ACTS.filter(function(a){return a.status==='pending';}).length;document.getElementById('nb-act').textContent=p||ACTS.length||'-';document.getElementById('ADOT').style.display=p>0?'inline':'none';}
+function addH(e){HIST.unshift(Object.assign({},e,{ts:new Date().toISOString()}));lsS(bk('hist'),JSON.stringify(HIST.slice(0,500)));rH();document.getElementById('nb-hist').textContent=HIST.length;}
+function rH(){var w=document.getElementById('HL');if(!w)return;document.getElementById('nb-hist').textContent=HIST.length;if(!HIST.length){w.innerHTML='<div class="empty-box">No changes yet.</div>';return;}w.innerHTML='<div class="hist-list">'+HIST.slice(0,100).map(function(h){var tm={pause:'ht-p',activate:'ht-a',budget:'ht-b',create:'ht-a'};var sc=h.source==='actionable'||h.source==='scheduler'?'ht-s':'ht-m';return'<div class="hi"><div class="hi-ts">'+new Date(h.ts).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</div><div class="hi-body"><div class="hi-title">'+h.title+'</div><div class="hi-sub">'+(h.detail||'')+'</div></div><span class="htag '+sc+'">'+(h.source||'manual')+'</span></div>';}).join('')+'</div>';}
+function clrH(){if(confirm('Clear history for '+curBrand.name+'?')){HIST=[];lsS(bk('hist'),'[]');rH();}}
+function initSched(){if(!curBrand)return;var s=lsG(bk('sched'));if(!s)return;var cfg;try{cfg=JSON.parse(s);}catch(e){return;}document.getElementById('ST').value=cfg.time||'08:00';var tzEl=document.getElementById('STZ');if(tzEl&&cfg.tz)tzEl.value=cfg.tz;if(cfg.enabled)startSched(cfg.time);}
+function saveSched(){var t=document.getElementById('ST').value,tz=document.getElementById('STZ').value;lsS(bk('sched'),JSON.stringify({time:t,tz:tz,enabled:true}));startSched(t);toast('Scheduler saved for '+curBrand.name);}
+function startSched(ts){if(schedTmr)clearInterval(schedTmr);document.getElementById('NRS').style.display='flex';updNR(ts);schedTmr=setInterval(function(){var n=new Date(),parts=ts.split(':').map(Number);if(n.getHours()===parts[0]&&n.getMinutes()===parts[1]&&n.getSeconds()<30)runNow();updNR(ts);},30000);slog('info','Scheduler on for '+curBrand.name+' at '+ts);}
+function disSched(){if(schedTmr){clearInterval(schedTmr);schedTmr=null;}document.getElementById('NRS').style.display='none';var s=lsG(bk('sched'));if(s){try{var c=JSON.parse(s);c.enabled=false;lsS(bk('sched'),JSON.stringify(c));}catch(e){}}toast('Scheduler disabled');}
+function updNR(ts){var e=document.getElementById('NRT');if(!e)return;var n=new Date(),parts=ts.split(':').map(Number);var nx=new Date(n);nx.setHours(parts[0],parts[1],0,0);if(nx<=n)nx.setDate(nx.getDate()+1);var d=nx-n;e.textContent=ts+' (in '+Math.floor(d/3600000)+'h '+Math.floor((d%3600000)/60000)+'m)';}
+function runNow(){slog('info','Run for '+curBrand.name+'...');if(!TOK){slog('err','No token.');return;}loadAll().then(function(){slog('ok',D.ads.length+' ads.');runHooks();var p=ACTS.filter(function(a){return a.status==='pending';}).length;slog('ok','Done. '+p+' pending.');addH({type:'create',title:'Scheduler run',detail:D.ads.length+' ads, '+p+' actionables',source:'scheduler'});toast('Run complete: '+curBrand.name,'info');}).catch(function(e){slog('err',e.message);});}
+function slog(type,msg){var b=document.getElementById('SLB');if(!b)return;var ts=new Date().toLocaleTimeString();var l=document.createElement('div');l.className='sl '+(type==='ok'?'ok':type==='err'?'err':'info');l.innerHTML='<span class="ts">'+ts+'</span>'+msg;b.appendChild(l);b.scrollTop=b.scrollHeight;var c=document.getElementById('SLC');if(c)c.textContent=b.children.length+' entries';}
+var ALL_TABS=['campaigns','adsets','ads','hooks','actionables','history','scheduler','tasks','duplicator','aiaudit'];
+function goTab(tab){curTab=tab;ALL_TABS.forEach(function(t){var el=document.getElementById('t-'+t);if(el)el.className='tab'+(t===tab?' active':'');var pn=document.getElementById('pn-'+t);if(pn)pn.style.display=t===tab?'block':'none';});var tb=document.getElementById('TBTNS');tb.innerHTML=
+  tab==='campaigns'?'<button class="btn sm pri" onclick="newCamp()">+ New campaign</button>':
+  tab==='adsets'?'<button class="btn sm pri" onclick="newAdSetFromTab()">+ New ad set</button>':
+  tab==='ads'?'<button class="btn sm pri" onclick="newAdFromTab()">+ New ad</button>':'';if(['campaigns','adsets','ads'].indexOf(tab)>=0&&!D[tab].length)loadTab();if(tab==='duplicator')initDuplicator();}
+function showModal(html,onOk){
+  var w=document.getElementById('MW');
+  var overlay=document.createElement('div');
+  overlay.className='moverlay';overlay.id='TM';
+  var box=document.createElement('div');box.className='modal';
+  box.innerHTML=html+'<div class="modal-acts"><button class="btn" id="MCAN">Cancel</button><button class="btn pri" id="MOK">Confirm</button></div>';
+  overlay.appendChild(box);w.innerHTML='';w.appendChild(overlay);
+  document.getElementById('MCAN').onclick=function(){overlay.remove();};
+  document.getElementById('MOK').onclick=function(){onOk();var tm=document.getElementById('TM');if(tm)tm.remove();};
+}
+function toast(msg,type){type=type||'success';var tw=document.getElementById('TW');var t=document.createElement('div');t.className='toast '+type;t.textContent=msg;tw.appendChild(t);setTimeout(function(){t.remove();},3200);}
+
+
+
+// ── DATE & CURRENCY ──
+var CUR_DATE_PRESET = 'last_30d';
+var CUR_CURR = 'INR';
+var CURR_RATES = {INR:1,USD:0.012,EUR:0.011,GBP:0.0095,AED:0.044,SGD:0.016,AUD:0.018};
+var CURR_SYMBOLS = {INR:'Rs.',USD:'$',EUR:'EUR ',GBP:'GBP ',AED:'AED ',SGD:'SGD ',AUD:'A$'};
+
+function onDateChange(){
+  var v=document.getElementById('DATE-PRESET').value;
+  var custom=document.getElementById('DATE-CUSTOM');
+  CUR_DATE_PRESET=v;
+  if(v==='custom'){custom.style.display='flex';document.getElementById('DATE-BADGE').textContent='Custom range';return;}
+  else{custom.style.display='none';}
+  var labels={today:'Today',yesterday:'Yesterday',last_7d:'Last 7 days',last_14d:'Last 14 days',last_30d:'Last 30 days',last_90d:'Last 90 days',this_month:'This month',last_month:'Last month',this_quarter:'This quarter'};
+  document.getElementById('DATE-BADGE').textContent=labels[v]||v;
+  reloadData();
+}
+function onCurrChange(){
+  CUR_CURR=document.getElementById('CURR-SEL').value;
+  var sym=CURR_SYMBOLS[CUR_CURR]||'$';
+  document.getElementById('CURR-BADGE').textContent=sym+CUR_CURR;
+  uStats();rd(curTab);
+  toast('Currency: '+CUR_CURR,'info');
+}
+function reloadData(){
+  if(CUR_DATE_PRESET==='custom'){
+    var from=document.getElementById('DATE-FROM').value;
+    var to=document.getElementById('DATE-TO').value;
+    if(!from||!to){toast('Select both dates','amber');return;}
+  }
+  D={campaigns:[],adsets:[],ads:[]};loadTab();
+}
+function getDateParam(){
+  if(CUR_DATE_PRESET==='custom'){
+    var from=document.getElementById('DATE-FROM')?document.getElementById('DATE-FROM').value:'';
+    var to=document.getElementById('DATE-TO')?document.getElementById('DATE-TO').value:'';
+    if(from&&to)return 'time_range={"since":"'+from+'","until":"'+to+'"}';
+  }
+  return '';
+}
+
+// ══════════════════════════════════════════════
+// TASK BOARD
+// ══════════════════════════════════════════════
+var TASKS = [];
+function loadTasks(){
+  try{TASKS=JSON.parse(lsG(bk('tasks'))||'[]');}catch(e){TASKS=[];}
+  rTasks();
+}
+function saveTasks(){lsS(bk('tasks'),JSON.stringify(TASKS.slice(0,200)));}
+function rTasks(){
+  var wrap=document.getElementById('TASK-LIST');
+  if(!wrap)return;
+  document.getElementById('nb-tasks').textContent=TASKS.filter(function(t){return t.status!=='done';}).length||TASKS.length||'0';
+  if(!TASKS.length){wrap.innerHTML='<div class="empty-box">No tasks yet.</div>';return;}
+  var icoMap={duplicate:'dup',publish:'pub',review:'rev',other:'rev'};
+  var stMap={draft:'tp-draft',progress:'tp-prog',done:'tp-done'};
+  var stLbl={draft:'Draft',progress:'In progress',done:'Done'};
+  wrap.innerHTML='<div class="task-board">'+TASKS.map(function(t,i){
+    return '<div class="task-card'+(t.status==='done'?' done':'')+'" id="tc-'+t.id+'">'+
+      '<div class="task-ico '+(icoMap[t.type]||'rev')+'">'+taskIco(t.type)+'</div>'+
+      '<div class="task-body">'+
+        '<div class="task-title">'+esc(t.title)+'</div>'+
+        '<div class="task-sub">'+esc(t.desc||'')+'</div>'+
+        '<div class="task-meta">'+
+          '<span class="task-pill '+(stMap[t.status]||'tp-draft')+'">'+stLbl[t.status]+'</span>'+
+          '<span class="task-pill tp-draft">'+new Date(t.ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+'</span>'+
+          (t.adCount?'<span class="task-pill tp-draft">'+t.adCount+' ads</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="task-acts">'+
+        (t.status==='draft'?'<button class="btn sm pri" onclick="setTaskStatus(this)" data-id="'+t.id+'" data-st="progress">Start</button>':'')+
+        (t.status==='progress'?'<button class="btn sm grn" onclick="setTaskStatus(this)" data-id="'+t.id+'" data-st="done">Mark done</button>':'')+
+        '<button class="btn sm red" onclick="delTask(this)" data-id="'+t.id+'">Remove</button>'+
+      '</div>'+
+    '</div>';
+  }).join('')+'</div>';
+}
+function taskIco(type){return type==='duplicate'?'⧉':type==='publish'?'▶':type==='review'?'◎':'✎';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function openNewTask(){
+  showModal('<h3>New task</h3><p>Document what you need to do for '+curBrand.name+'</p>'+
+    '<label>Task title</label><input type="text" id="tT" placeholder="e.g. Duplicate Diwali ads with new creatives"/>'+
+    '<label>Type</label><select id="tTy"><option value="duplicate">Duplicate ads</option><option value="publish">Publish campaign</option><option value="review">Review performance</option><option value="other">Other</option></select>'+
+    '<label>Description / notes</label><input type="text" id="tD" placeholder="e.g. Use 3 new video creatives from Drive"/>',
+    function(){
+      var title=document.getElementById('tT').value.trim();
+      if(!title){toast('Enter task title','error');return;}
+      var task={id:'t'+Date.now(),title:title,type:document.getElementById('tTy').value,desc:document.getElementById('tD').value.trim(),status:'draft',ts:new Date().toISOString()};
+      TASKS.unshift(task);saveTasks();rTasks();
+      addH({type:'create',title:'Task: '+title,detail:task.type,source:'tasks'});
+      toast('Task created');
+    }
+  );
+}
+function setTaskStatus(btn){
+  var id=btn.getAttribute('data-id');
+  var st=btn.getAttribute('data-st');
+  if(!id||!st)return;
+  TASKS.forEach(function(t){if(t.id===id)t.status=st;});
+  saveTasks();rTasks();
+  addH({type:'activate',title:'Task '+st,detail:id,source:'tasks'});
+}
+function delTask(btn){
+  var id=btn.getAttribute('data-id');
+  if(!id)return;
+  TASKS=TASKS.filter(function(t){return t.id!==id;});
+  saveTasks();rTasks();
+}
+
+// ══════════════════════════════════════════════
+// CREATIVE DUPLICATOR
+// ══════════════════════════════════════════════
+var DUP = {step:1, sourceAd:null, driveFiles:[], selectedFiles:[], adRows:[], publishing:false};
+
+function initDuplicator(){
+  DUP={step:1,sourceAd:null,driveFiles:[],selectedFiles:[],adRows:[],publishing:false};
+  if(!D.ads.length){
+    document.getElementById('DUP-EMPTY').style.display='block';
+    document.getElementById('DUP-BODY').innerHTML='<div class="empty-box">Go to the <strong style="color:var(--blue)">Ads</strong> tab first to load ads, then come back here.</div>';
+    return;
+  }
+  document.getElementById('DUP-EMPTY').style.display='none';
+  goDupStep(1);
+}
+
+function goDupStep(n){
+  DUP.step=n;
+  // Update step indicators
+  for(var i=1;i<=4;i++){
+    var sEl=document.getElementById('dss-'+i);
+    var nEl=document.getElementById('dsn-'+i);
+    if(!sEl||!nEl)continue;
+    if(i<n){sEl.className='ds done';nEl.className='ds-num done';nEl.textContent='✓';}
+    else if(i===n){sEl.className='ds active';nEl.className='ds-num active';nEl.textContent=i;}
+    else{sEl.className='ds';nEl.className='ds-num wait';nEl.textContent=i;}
+  }
+  var body=document.getElementById('DUP-BODY');
+  if(n===1) body.innerHTML=renderDupStep1();
+  else if(n===2) body.innerHTML=renderDupStep2();
+  else if(n===3) body.innerHTML=renderDupStep3();
+  else if(n===4) body.innerHTML=renderDupStep4();
+}
+
+function renderDupStep1(){
+  var ads=D.ads;
+  var rows=ads.map(function(ad){
+    var i=(ad.insights&&ad.insights.data&&ad.insights.data[0])||{};
+    var spend=parseFloat(i.spend||0);
+    return '<div class="ad-pick'+(DUP.sourceAd&&DUP.sourceAd.id===ad.id?' sel':'')+'" onclick="pickSourceAdEl(this)" data-id="'+ad.id+'">'+
+      '<span style="font-size:16px">'+(ad.status==='ACTIVE'?'🟢':'⚫')+'</span>'+
+      '<div class="ad-pick-name">'+esc(ad.name)+'</div>'+
+      '<div class="ad-pick-meta">'+(spend>0?fs(spend)+' spend':'No spend')+'</div>'+
+    '</div>';
+  }).join('');
+  return '<div class="dup-section"><h4>Select source ad to duplicate</h4>'+
+    '<div style="margin-bottom:8px"><input class="drive-search" placeholder="Search ads..." oninput="filterDupAds(this.value)" id="DUP-AD-SEARCH"/></div>'+
+    '<div class="ad-pick-list" id="DUP-AD-LIST">'+rows+'</div></div>'+
+    '<div style="display:flex;justify-content:flex-end;margin-top:12px">'+
+      '<button class="btn pri" onclick="dupNext1()" id="DUP-NEXT1" '+(DUP.sourceAd?'':'disabled')+'>Next: Choose creatives →</button>'+
+    '</div>';
+}
+
+function filterDupAds(q){
+  var items=document.querySelectorAll('#DUP-AD-LIST .ad-pick');
+  items.forEach(function(el){
+    var name=el.querySelector('.ad-pick-name').textContent.toLowerCase();
+    el.style.display=name.indexOf(q.toLowerCase())>=0?'flex':'none';
+  });
+}
+
+function pickSourceAdEl(el){var id=el.getAttribute('data-id');pickSourceAd(id);}
+function pickSourceAd(id){
+  D.ads.forEach(function(ad){if(ad.id===id)DUP.sourceAd=ad;});
+  document.querySelectorAll('.ad-pick').forEach(function(el){el.classList.remove('sel');});
+  // sel via data attribute
+  document.querySelectorAll('.ad-pick').forEach(function(el){
+    if(el.getAttribute('data-id')===id) el.classList.add('sel');
+  });
+  var btn=document.getElementById('DUP-NEXT1');
+  if(btn)btn.disabled=false;
+}
+
+function dupNext1(){
+  if(!DUP.sourceAd){toast('Select a source ad first','error');return;}
+  goDupStep(2);
+  loadDriveFiles();
+}
+
+function renderDupStep2(){
+  return '<div class="dup-section"><h4>Choose creatives from Google Drive</h4>'+
+    '<p style="font-size:11px;color:var(--text2);margin-bottom:10px">Select 2–5 image or video files. Each becomes a separate ad.</p>'+
+    '<input class="drive-search" placeholder="Search Drive files..." oninput="filterDrive(this.value)" id="DRIVE-SEARCH"/>'+
+    '<div id="DRIVE-STATUS" style="font-size:12px;color:var(--text3);margin-bottom:8px">Connecting to Google Drive...</div>'+
+    '<div class="drive-grid" id="DRIVE-GRID"></div></div>'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">'+
+      '<button class="btn" onclick="goDupStep(1)">← Back</button>'+
+      '<span style="font-size:11px;color:var(--text2)" id="DUP-SEL-COUNT">0 selected</span>'+
+      '<button class="btn pri" onclick="dupNext2()" id="DUP-NEXT2" disabled>Next: Configure ads →</button>'+
+    '</div>';
+}
+
+function loadDriveFiles(){
+  var status=document.getElementById('DRIVE-STATUS');
+  if(status)status.textContent='Loading from Google Drive...';
+  // Call Google Drive MCP via Anthropic API
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      mcp_servers:[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}],
+      messages:[{role:'user',content:'List all image and video files in my Google Drive. Return ONLY a JSON array with objects: {id, name, mimeType, size, webViewLink}. No explanation. Images: jpg/png/gif/webp. Videos: mp4/mov/avi. Max 50 files.'}]
+    })
+  }).then(function(r){return r.json();}).then(function(data){
+    var text='';
+    (data.content||[]).forEach(function(c){if(c.type==='text')text+=c.text;});
+    try{
+      var clean=text.replace(/```json|```/g,'').trim();
+      // find JSON array
+      var start=clean.indexOf('[');
+      var end=clean.lastIndexOf(']');
+      if(start>=0&&end>=0) clean=clean.substring(start,end+1);
+      DUP.driveFiles=JSON.parse(clean);
+      renderDriveGrid(DUP.driveFiles);
+      if(status)status.textContent=DUP.driveFiles.length+' files found in Google Drive';
+    }catch(e){
+      if(status)status.textContent='Could not load Drive files. Paste URLs below instead.';
+      renderDriveManual();
+    }
+  }).catch(function(e){
+    if(status)status.textContent='Drive connection failed. Use manual URL entry.';
+    renderDriveManual();
+  });
+}
+
+function renderDriveGrid(files){
+  var grid=document.getElementById('DRIVE-GRID');
+  if(!grid)return;
+  if(!files.length){grid.innerHTML='<div style="color:var(--text3);font-size:12px;grid-column:1/-1">No image or video files found.</div>';return;}
+  grid.innerHTML=files.map(function(f){
+    var isVid=f.mimeType&&f.mimeType.indexOf('video')>=0;
+    var ico=isVid?'🎬':'🖼️';
+    var sel=DUP.selectedFiles.some(function(s){return s.id===f.id;});
+    return '<div class="drive-item'+(sel?' sel':'')+'" onclick="toggleDriveFileEl(this)" data-id="'+f.id+'" data-name="'+esc(f.name)+'" data-mime="'+esc(f.mimeType||'')+'" data-url="'+esc(f.webViewLink||f.id)+'">'+
+      '<div class="drive-icon">'+ico+'</div>'+
+      '<div class="drive-name" title="'+esc(f.name)+'">'+esc(f.name)+'</div>'+
+      (f.size?'<div class="drive-size">'+(parseInt(f.size)/1024/1024).toFixed(1)+'MB</div>':'')+'</div>';
+  }).join('');
+}
+
+function renderDriveManual(){
+  var grid=document.getElementById('DRIVE-GRID');
+  if(!grid)return;
+  grid.style.display='none';
+  // Show manual URL entry
+  var area=document.createElement('div');
+  area.style.cssText='width:100%';
+  area.innerHTML='<p style="font-size:11px;color:var(--text2);margin-bottom:8px">Enter public image/video URLs (one per line or comma-separated):</p>'+
+    '<textarea id="MANUAL-URLS" style="width:100%;height:100px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:8px;outline:none;font-family:DM Mono,monospace;resize:vertical" placeholder="https://drive.google.com/...&#10;https://..."></textarea>'+
+    '<button class="btn sm" style="margin-top:7px" onclick="parseManualURLs()">Use these URLs</button>';
+  grid.parentNode.insertBefore(area, grid);
+}
+
+function parseManualURLs(){
+  var txt=document.getElementById('MANUAL-URLS');
+  if(!txt)return;
+  var raw=txt.value;
+  var urls=raw.replace(/,/g,' ').replace(/\s+/g,' ').split(' ').map(function(u){return u.trim();}).filter(function(u){return u.length>5;});
+  DUP.selectedFiles=urls.map(function(u,i){return {id:'manual_'+i,name:'Creative '+(i+1),mimeType:'image/jpeg',webViewLink:u,directUrl:u};});
+  uDupSelCount();
+  var btn=document.getElementById('DUP-NEXT2');
+  if(btn)btn.disabled=DUP.selectedFiles.length===0;
+  toast(DUP.selectedFiles.length+' creatives added');
+}
+
+function filterDrive(q){
+  var items=document.querySelectorAll('.drive-item');
+  items.forEach(function(el){
+    var name=(el.querySelector('.drive-name')||{}).textContent||'';
+    el.style.display=name.toLowerCase().indexOf(q.toLowerCase())>=0?'':'none';
+  });
+}
+
+function toggleDriveFileEl(el){
+  var id=el.getAttribute('data-id');
+  var name=el.getAttribute('data-name');
+  var mime=el.getAttribute('data-mime');
+  var url=el.getAttribute('data-url');
+  toggleDriveFile(id,name,mime,url,el);
+}
+function toggleDriveFile(id,name,mime,url,el){
+  var idx=DUP.selectedFiles.findIndex(function(f){return f.id===id;});
+  if(idx>=0){DUP.selectedFiles.splice(idx,1);}
+  else{
+    if(DUP.selectedFiles.length>=5){toast('Max 5 creatives per batch','amber');return;}
+    DUP.selectedFiles.push({id:id,name:name,mimeType:mime,webViewLink:url});
+  }
+  // Update UI
+  document.querySelectorAll('.drive-item').forEach(function(item){
+    if(item.getAttribute('data-id')===id) item.classList.toggle('sel',DUP.selectedFiles.some(function(f){return f.id===id;}));
+  });
+  uDupSelCount();
+}
+
+function uDupSelCount(){
+  var c=document.getElementById('DUP-SEL-COUNT');
+  if(c)c.textContent=DUP.selectedFiles.length+' selected (max 5)';
+  var btn=document.getElementById('DUP-NEXT2');
+  if(btn)btn.disabled=DUP.selectedFiles.length===0;
+}
+
+function dupNext2(){
+  if(!DUP.selectedFiles.length){toast('Select at least 1 creative','error');return;}
+  // Build ad rows from selected files + copy from source ad
+  var src=DUP.sourceAd||{};
+  DUP.adRows=DUP.selectedFiles.map(function(f,i){
+    return {
+      id:'row_'+i,
+      file:f,
+      adName:(src.name||'Ad')+' — '+f.name.replace(/\.[^.]+$/,''),
+      url:src.website_url||'',
+      bodyCopy:'',
+      headline:'',
+      status:'PAUSED'
+    };
+  });
+  goDupStep(3);
+}
+
+function renderDupStep3(){
+  var src=DUP.sourceAd||{};
+  var rows=DUP.adRows.map(function(row,i){
+    var isVid=row.file.mimeType&&row.file.mimeType.indexOf('video')>=0;
+    return '<div class="ad-row">'+
+      '<div class="ad-row-hdr">'+
+        '<span class="ad-row-lbl">'+(isVid?'🎬':'🖼️')+' Ad '+(i+1)+': '+esc(row.file.name)+'</span>'+
+        '<button class="btn sm red" onclick="removeDupRow('+i+')">Remove</button>'+
+      '</div>'+
+      '<div class="ad-row-fields">'+
+        '<div class="af full"><label>Ad name</label><input type="text" value="'+esc(row.adName)+'" oninput="DUP.adRows['+i+'].adName=this.value" placeholder="Ad name"/></div>'+
+        '<div class="af full"><label>Destination URL</label><input type="text" value="'+esc(row.url)+'" oninput="DUP.adRows['+i+'].url=this.value" placeholder="https://..."/></div>'+
+        '<div class="af full"><label>Primary text (ad copy)</label><textarea oninput="DUP.adRows['+i+'].bodyCopy=this.value" placeholder="Leave blank to copy from source ad">'+esc(row.bodyCopy)+'</textarea></div>'+
+        '<div class="af"><label>Headline (optional)</label><input type="text" value="'+esc(row.headline)+'" oninput="DUP.adRows['+i+'].headline=this.value" placeholder="Headline"/></div>'+
+        '<div class="af"><label>Status</label><select onchange="DUP.adRows['+i+'].status=this.value"><option value="PAUSED">Paused (safe)</option><option value="ACTIVE">Active (live immediately)</option></select></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  return '<div class="dup-section"><h4>Configure each ad — '+DUP.adRows.length+' ads from "'+esc((src.name||'').substring(0,40))+'"</h4>'+
+    '<div class="ad-row-list">'+rows+'</div></div>'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">'+
+      '<button class="btn" onclick="goDupStep(2)">← Back</button>'+
+      '<button class="btn pri" onclick="goDupStep(4)">Review & Publish →</button>'+
+    '</div>';
+}
+
+function removeDupRow(i){
+  DUP.adRows.splice(i,1);
+  DUP.selectedFiles.splice(i,1);
+  if(!DUP.adRows.length){goDupStep(2);return;}
+  goDupStep(3);
+}
+
+function renderDupStep4(){
+  var src=DUP.sourceAd||{};
+  var rows=DUP.adRows.map(function(row,i){
+    return '<div class="pub-row" id="pub-row-'+i+'">'+
+      '<span style="font-size:14px">'+(row.file.mimeType&&row.file.mimeType.indexOf('video')>=0?'🎬':'🖼️')+'</span>'+
+      '<div class="pub-row-name">'+esc(row.adName)+'</div>'+
+      '<div style="font-size:10px;color:var(--text3);font-family:DM Mono,monospace;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(row.url||'No URL')+'</div>'+
+      '<span class="pub-row-status prs-wait" id="pub-st-'+i+'">Ready</span>'+
+    '</div>';
+  }).join('');
+  return '<div class="dup-section">'+
+    '<h4>Review '+DUP.adRows.length+' ads — duplicated from "'+esc((src.name||'').substring(0,40))+'"</h4>'+
+    '<p style="font-size:11px;color:var(--text2);margin-bottom:10px">Source ad set: '+esc(src._adsetId||'same as source')+'</p>'+
+    '<div id="PUB-LIST">'+rows+'</div>'+
+    '<div id="PUB-PROG" style="display:none">'+
+      '<div class="prog-bar-wrap"><div class="prog-bar-fill" id="PUB-BAR" style="width:0%"></div></div>'+
+      '<div style="font-size:11px;color:var(--text2);text-align:center" id="PUB-MSG">Publishing...</div>'+
+    '</div>'+
+    '<div id="PUB-SUCCESS" style="display:none;text-align:center;padding:20px">'+
+      '<div style="font-size:28px;margin-bottom:8px">✅</div>'+
+      '<div style="font-size:14px;font-weight:600;color:var(--text)">All ads created!</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-top:4px">Logged to History tab</div>'+
+      '<button class="btn pri" style="margin-top:14px" onclick="resetDuplicator()">+ Duplicate more</button>'+
+    '</div>'+
+  '</div>'+
+  '<div id="PUB-ACTS" style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">'+
+    '<button class="btn" onclick="goDupStep(3)">← Edit</button>'+
+    '<button class="btn pri" onclick="publishDups()">🚀 Create '+DUP.adRows.length+' ads</button>'+
+  '</div>';
+}
+
+function publishDups(){
+  if(DUP.publishing)return;
+  if(!BRAND_ACCT){toast('No ad account assigned','error');return;}
+  var src=DUP.sourceAd;
+  if(!src){toast('No source ad','error');return;}
+  DUP.publishing=true;
+  document.getElementById('PUB-ACTS').style.display='none';
+  document.getElementById('PUB-PROG').style.display='block';
+  var total=DUP.adRows.length, done=0, failed=0;
+  var results=[];
+
+  function processRow(i){
+    if(i>=DUP.adRows.length){
+      finishPublish(results);return;
+    }
+    var row=DUP.adRows[i];
+    var stEl=document.getElementById('pub-st-'+i);
+    var barEl=document.getElementById('PUB-BAR');
+    var msgEl=document.getElementById('PUB-MSG');
+    if(stEl)stEl.className='pub-row-status prs-run';
+    if(stEl)stEl.textContent='Creating...';
+    if(barEl)barEl.style.width=(i/total*100)+'%';
+    if(msgEl)msgEl.textContent='Creating ad '+(i+1)+' of '+total+': '+row.adName;
+
+    // Build creative object
+    var pageId=BRAND_ACCT.page_id||'';
+    var acId=getActId();
+    // First create ad creative, then create ad
+    var storySpec={};
+    storySpec.link_data={
+      link:row.url||src.website_url||'',
+      message:row.bodyCopy||(src._body||''),
+      name:row.headline||(src._headline||row.adName),
+      call_to_action:{type:'SHOP_NOW',value:{link:row.url||src.website_url||''}}
+    };
+    if(row.file.directUrl||row.file.webViewLink) storySpec.link_data.picture=row.file.directUrl||row.file.webViewLink;
+    if(pageId) storySpec.page_id=pageId;
+
+    var creativeBody={name:row.adName+' — Creative',object_story_spec:storySpec};
+
+    api('/'+acId+'/adcreatives','POST',creativeBody).then(function(cr){
+      // Now create the ad under same ad set as source
+      var adBody={
+        name:row.adName,
+        adset_id:src._adsetId||src.adset_id||'',
+        creative:{creative_id:cr.id},
+        status:row.status
+      };
+      // If no adset_id, use same campaign approach
+      if(!adBody.adset_id){
+        if(stEl)stEl.className='pub-row-status prs-err';
+        if(stEl)stEl.textContent='No ad set ID';
+        results.push({row:row,error:'No ad set ID found',creativeId:cr.id});
+        done++;failed++;processRow(i+1);return;
+      }
+      return api('/'+acId+'/ads','POST',adBody).then(function(ad){
+        if(stEl)stEl.className='pub-row-status prs-ok';
+        if(stEl)stEl.textContent='✓ Created';
+        results.push({row:row,adId:ad.id,creativeId:cr.id,status:'success'});
+        done++;processRow(i+1);
+      });
+    }).catch(function(e){
+      if(stEl)stEl.className='pub-row-status prs-err';
+      if(stEl)stEl.textContent='✗ Failed';
+      results.push({row:row,error:e.message,status:'failed'});
+      done++;failed++;processRow(i+1);
+    });
+  }
+
+  processRow(0);
+
+  function finishPublish(results){
+    DUP.publishing=false;
+    var barEl=document.getElementById('PUB-BAR');
+    if(barEl)barEl.style.width='100%';
+    setTimeout(function(){
+      document.getElementById('PUB-PROG').style.display='none';
+      document.getElementById('PUB-SUCCESS').style.display='block';
+    },600);
+    // Log to history
+    var successCount=results.filter(function(r){return r.status==='success';}).length;
+    var detail=successCount+'/'+total+' ads created from "'+((DUP.sourceAd||{}).name||'unknown')+'"';
+    addH({type:'activate',title:'Creative Duplicator: '+successCount+' new ads',detail:detail,source:'duplicator'});
+    // Log each ad
+    results.forEach(function(r){
+      var statusText=r.status==='success'?'Created (ID: '+r.adId+')':'Failed: '+r.error;
+      addH({type:r.status==='success'?'activate':'pause',title:r.row.adName,detail:'Creative: '+r.row.file.name+' | URL: '+r.row.url+' | '+statusText,source:'duplicator'});
+    });
+    // Create task record
+    var task={id:'t'+Date.now(),title:'Duplicated '+successCount+' ads',type:'duplicate',desc:detail+' | Creatives: '+DUP.selectedFiles.map(function(f){return f.name;}).join(', '),status:'done',adCount:successCount,ts:new Date().toISOString()};
+    TASKS.unshift(task);saveTasks();
+    document.getElementById('nb-tasks').textContent=TASKS.filter(function(t){return t.status!=='done';}).length;
+    toast(successCount+' ads created!');
+    // Reload ads
+    setTimeout(function(){lA(getActId()).then(function(){uStats();rd('ads');});},1500);
+  }
+}
+
+function resetDuplicator(){
+  DUP={step:1,sourceAd:null,driveFiles:[],selectedFiles:[],adRows:[],publishing:false};
+  goDupStep(1);
+}
+
+
+// ══════════════════════════════════════════════
+// AI AUDIT ENGINE
+// Uses: Hook Analysis skill + Creative Intelligence + Meta Agent
+// ══════════════════════════════════════════════
+var AUDIT_RESULTS = [];
+
+function clearAudit(){
+  AUDIT_RESULTS=[];
+  document.getElementById('AUDIT-RESULTS').style.display='none';
+  document.getElementById('AUDIT-RESULTS').innerHTML='';
+  document.getElementById('nb-audit').textContent='-';
+}
+
+function runAIAudit(){
+  if(!D.ads.length && !D.campaigns.length){
+    toast('Load Ads data first — go to Ads tab','error');return;
+  }
+  var btn=document.getElementById('AI-AUDIT-BTN');
+  btn.disabled=true;btn.textContent='Running...';
+  document.getElementById('AUDIT-STATUS').style.display='block';
+  document.getElementById('AUDIT-RESULTS').style.display='none';
+
+  var killThr=parseFloat(document.getElementById('AUDIT-KILL-THR').value)||800;
+  var scaleThr=parseFloat(document.getElementById('AUDIT-SCALE-THR').value)||5;
+  var depth=document.getElementById('AUDIT-DEPTH').value;
+  var brand=curBrand?curBrand.name:'Brand';
+  var acctName=BRAND_ACCT?(BRAND_ACCT.name||''):'';
+
+  // Build ad data payload for AI
+  var ads=D.ads.length>0?D.ads:D.campaigns;
+  var adPayload=ads.map(function(ad){
+    var i=(ad.insights&&ad.insights.data&&ad.insights.data[0])||{};
+    var spend=parseFloat(i.spend||0);
+    var actions=i.actions||[];
+    var purch=null,rev=null;
+    actions.forEach(function(a){
+      if(a.action_type==='offsite_conversion.fb_pixel_purchase')purch=a;
+      if(a.action_type==='offsite_conversion.fb_pixel_purchase_value')rev=a;
+    });
+    var purchases=purch?parseInt(purch.value||0):0;
+    var revenue=rev?parseFloat(rev.value||0):0;
+    var roas=spend>0?revenue/spend:0;
+    var vpa=i.video_play_actions||[];
+    var p25a=i.video_p25_watched_actions||[];
+    var plays=vpa[0]?parseFloat(vpa[0].value||0):0;
+    var p25=p25a[0]?parseFloat(p25a[0].value||0):0;
+    var hookRate=plays>0?(p25/plays):0;
+    var atc=actions.filter(function(a){return a.action_type==='add_to_cart';});
+    var atcCount=atc[0]?parseInt(atc[0].value||0):0;
+    var clicks=parseFloat(i.clicks||0);
+    var freq=parseFloat(i.frequency||0);
+    var cpm=parseFloat(i.cpm||0);
+    var ctr=parseFloat(i.ctr||0);
+    return {
+      id:ad.id,
+      name:ad.name,
+      status:ad.status,
+      url:ad.website_url||'',
+      spend:spend,
+      roas:Math.round(roas*10)/10,
+      hookRate:Math.round(hookRate*1000)/10,
+      purchases:purchases,
+      revenue:Math.round(revenue),
+      clicks:Math.round(clicks),
+      atc:atcCount,
+      atcRate:clicks>0?Math.round(atcCount/clicks*100):0,
+      frequency:Math.round(freq*10)/10,
+      cpm:Math.round(cpm),
+      ctr:Math.round(ctr*100)/100,
+      impressions:parseFloat(i.impressions||0)
+    };
+  }).filter(function(a){return a.impressions>=50;});
+
+  if(!adPayload.length){
+    toast('Not enough ad data. Load ads and run hook analysis first.','error');
+    btn.disabled=false;btn.textContent='▶ Run AI Audit';
+    document.getElementById('AUDIT-STATUS').style.display='none';
+    return;
+  }
+
+  var promptParts = [
+    'You are the Digistex AI Audit Engine. You use three intelligence frameworks:',
+    '',
+    '1. HOOK ANALYSIS SKILL: Classify each ad into one of 5 hook frameworks:',
+    '   DISPATCH: Behind-the-scenes packing/shipping. Best for cold traffic. Builds trust.',
+    '   ASPIRATION: Lifestyle/emotion first. Best for warm audiences. High CTR but needs product fit.',
+    '   SEASONAL: Festive/seasonal. Highest conversion trigger in D2C. Time-sensitive.',
+    '   EDUCATIONAL: Product comparisons, FAQs, vs format. Highest ROAS (8-10x consistently).',
+    '   TRENDING: Trending audio, reel-style. Best for Instagram. High hook rate, lower ROAS.',
+    '   Classify from ad NAME keywords. Score: STRONG (hookRate>15%+ROAS>4x), MODERATE, KILL.',
+    '',
+    '2. CREATIVE INTELLIGENCE (8 DIMENSIONS, 0-100 score):',
+    '   D1 Hook Rate(25pts): >=35%=25, >=28%=20, >=20%=14, >=12%=7, else=0',
+    '   D2 ROAS(25pts): >=6=25, >=4=20, >=2.5=13, >=1=6, else=0',
+    '   D3 ATC Rate(15pts): >=10%=15, >=7%=12, >=4%=7, >=2%=3, else=0',
+    '   D4 Frequency penalty(10pts): <1.5=10, <1.8=8, <2.2=4, <2.8=1, else=0',
+    '   D5 Volume(4pts): spend>=3000=4, >=1500=3, >=500=2, >=100=1',
+    '   D6 CTR quality(3pts): ctr>=2.5%=3, >=1.5%=2, >=1%=1, else=0',
+    '   D7 Completion proxy(10pts): hookRate>=30%=10, >=20%=7, >=12%=4, else=1',
+    '   D8 CPM(5pts): relative to avg, give 3 if no avg',
+    '   TOTAL: >=75=SCALE, >=55=OPTIMIZE, >=35=WATCH, else=KILL',
+    '   KILL OVERRIDE: spend>'+killThr+' AND purchases=0. SCALE OVERRIDE: roas>='+scaleThr+' AND hookRate>=15.',
+    '',
+    '3. META AGENT RULES:',
+    '   URL check: /collections/frontpage or / = HIGH SEVERITY mismatch flag.',
+    '   Frequency >=2.2 = fatigue WARNING, >=3.0 = KILL override.',
+    '   High hookRate + low ROAS = wrong audience, not wrong creative.',
+    '   Kill threshold: '+killThr+' INR spend with 0 purchases. Scale threshold: '+scaleThr+'x ROAS.',
+    '',
+    'BRAND: '+brand+' ('+acctName+'). DEPTH: '+depth,
+    '',
+    'AD DATA ('+adPayload.length+' ads):',
+    JSON.stringify(adPayload),
+    '',
+    'Return ONLY a JSON object — no markdown, no explanation:',
+    '{',
+    '  "summary": {',
+    '    "scale":N,"optimize":N,"watch":N,"kill":N,"wasted_spend":N,',
+    '    "top_insight":"one sentence",',
+    '    "key_insights":[{"title":"","body":"","action":"","color":"green|red|amber|blue"}]',
+    '  },',
+    '  "ads":[{',
+    '    "id":"","name":"",',
+    '    "classification":"SCALE|OPTIMIZE|WATCH|KILL",',
+    '    "score":0,',
+    '    "hook_type":"DISPATCH|ASPIRATION|SEASONAL|EDUCATIONAL|TRENDING|UNCLASSIFIED",',
+    '    "hook_score":"STRONG|MODERATE|KILL",',
+    '    "hookRate":0,',
+    '    "tags":["STRONG HOOK","URL MISMATCH","FATIGUED","ZERO PURCHASES","SCALE READY","TOP ROAS"],',
+    '    "why":"2-3 sentences with specific numbers",',
+    '    "fix":"Specific actionable fix",',
+    '    "executable":true,',
+    '    "executable_action":"PAUSE|ACTIVATE|null",',
+    '    "brief":"Creative brief or null"',
+    '  }]',
+    '}'
+  ];
+  var prompt = promptParts.join('\n');
+    setAuditMsg('Sending '+adPayload.length+' ads to Claude AI...');
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:4000,
+      messages:[{role:'user',content:prompt}]
+    })
+  }).then(function(r){return r.json();}).then(function(data){
+    var text='';
+    (data.content||[]).forEach(function(c){if(c.type==='text')text+=c.text;});
+    try{
+      var clean=text.replace(/```json|```/g,'').trim();
+      var start=clean.indexOf('{');var end=clean.lastIndexOf('}');
+      if(start>=0&&end>=0)clean=clean.substring(start,end+1);
+      var result=JSON.parse(clean);
+      AUDIT_RESULTS=result;
+      setAuditMsg('Generating actionables from AI findings...');
+      processAuditResults(result, killThr, scaleThr);
+    }catch(e){
+      toast('AI response parse error: '+e.message,'error');
+      finishAudit();
+    }
+  }).catch(function(e){
+    toast('AI Audit failed: '+e.message,'error');
+    finishAudit();
+  });
+}
+
+function setAuditMsg(msg){
+  var el=document.getElementById('AUDIT-MSG');
+  if(el)el.textContent=msg;
+}
+
+function processAuditResults(result, killThr, scaleThr){
+  var ads=result.ads||[];
+  var summary=result.summary||{};
+
+  // Auto-generate actionables from AI findings
+  var newActs=[];
+  ads.forEach(function(a){
+    if(!a.executable||!a.executable_action)return;
+    var exists=ACTS.some(function(x){return x.adId===a.id&&x.status!=='rejected';});
+    if(exists)return;
+    newActs.push({
+      id:'ai'+Date.now()+'_'+Math.random().toString(36).slice(2,5),
+      adId:a.id,adName:a.name,
+      type:a.executable_action==='PAUSE'?'pause':'activate',
+      title:(a.executable_action==='PAUSE'?'Pause':'Activate')+': "'+a.name.substring(0,40)+'..."',
+      reason:'AI Audit ('+a.classification+'): '+a.fix,
+      tags:[a.hook_type,a.classification,'AI-AUDIT'],
+      status:'pending',
+      createdAt:new Date().toISOString(),
+      source:'ai-audit'
+    });
+  });
+
+  if(newActs.length){
+    ACTS=newActs.concat(ACTS);
+    lsS(bk('acts'),JSON.stringify(ACTS.slice(0,200)));
+    rA();uBadges();
+  }
+
+  // Log to history
+  addH({
+    type:'create',
+    title:'AI Audit: '+ads.length+' ads analysed',
+    detail:'SCALE:'+summary.scale+' OPTIMIZE:'+summary.optimize+' WATCH:'+summary.watch+' KILL:'+summary.kill+' | Wasted: '+fs(summary.wasted_spend||0),
+    source:'ai-audit'
+  });
+
+  // Brief tasks for KILL ads
+  ads.filter(function(a){return a.brief&&(a.classification==='KILL'||a.hook_score==='KILL');}).forEach(function(a){
+    var task={
+      id:'t'+Date.now()+'_'+Math.random().toString(36).slice(2,5),
+      title:'Creative brief: '+a.name.substring(0,40),
+      type:'duplicate',
+      desc:a.brief,
+      status:'draft',
+      ts:new Date().toISOString()
+    };
+    TASKS.unshift(task);
+  });
+  saveTasks();rTasks();
+
+  document.getElementById('nb-audit').textContent=ads.length;
+  renderAuditResults(result);
+  finishAudit();
+
+  if(newActs.length) toast(newActs.length+' actionables generated from AI Audit','amber');
+  if(TASKS.filter(function(t){return t.type==='duplicate'&&t.status==='draft';}).length)
+    toast('Creative briefs added to Tasks tab','info');
+}
+
+function finishAudit(){
+  document.getElementById('AUDIT-STATUS').style.display='none';
+  var btn=document.getElementById('AI-AUDIT-BTN');
+  btn.disabled=false;btn.textContent='▶ Run AI Audit';
+}
+
+function renderAuditResults(result){
+  var ads=result.ads||[];
+  var summary=result.summary||{};
+  var insights=summary.key_insights||[];
+  var colorMap={green:'var(--green)',red:'var(--red)',amber:'var(--amber)',blue:'var(--blue)'};
+  var clsMap={SCALE:'acb-scale',OPTIMIZE:'acb-optimize',WATCH:'acb-watch',KILL:'acb-kill'};
+
+  // Sort: KILL first, then WATCH, OPTIMIZE, SCALE
+  var order={KILL:0,WATCH:1,OPTIMIZE:2,SCALE:3};
+  ads=ads.slice().sort(function(a,b){return (order[a.classification]||2)-(order[b.classification]||2);});
+
+  var html='';
+
+  // Summary strip
+  html+='<div class="audit-summary">'+
+    '<div class="as-title">Audit Summary — '+curBrand.name+'</div>'+
+    '<div class="as-grid">'+
+    '<div class="as-cell"><div class="as-cell-lbl">Scale</div><div class="as-cell-val" style="color:var(--green)">'+(summary.scale||0)+'</div></div>'+
+    '<div class="as-cell"><div class="as-cell-lbl">Optimize</div><div class="as-cell-val" style="color:var(--blue)">'+(summary.optimize||0)+'</div></div>'+
+    '<div class="as-cell"><div class="as-cell-lbl">Watch</div><div class="as-cell-val" style="color:var(--amber)">'+(summary.watch||0)+'</div></div>'+
+    '<div class="as-cell"><div class="as-cell-lbl">Kill</div><div class="as-cell-val" style="color:var(--red)">'+(summary.kill||0)+'</div></div>'+
+    '</div>';
+  if(summary.wasted_spend>0){
+    html+='<div style="font-size:12px;color:var(--red);margin-bottom:10px">Wasted spend: <strong>'+fs(summary.wasted_spend)+'</strong> — ads with 0 purchases above kill threshold</div>';
+  }
+  // Key insights
+  if(insights.length){
+    html+='<div>';
+    insights.forEach(function(ins){
+      var col=colorMap[ins.color]||'var(--blue)';
+      html+='<div class="audit-insight">'+
+        '<div class="ai-dot" style="background:'+col+'"></div>'+
+        '<div class="ai-body">'+
+          '<div class="ai-title">'+esc(ins.title)+'</div>'+
+          '<div class="ai-sub">'+esc(ins.body)+'</div>'+
+          (ins.action?'<div class="ai-action">'+esc(ins.action)+'</div>':'')+
+        '</div>'+
+      '</div>';
+    });
+    html+='</div>';
+  }
+  html+='</div>';
+
+  // Per-ad cards
+  html+='<div class="audit-results">';
+  ads.forEach(function(a){
+    var cls=clsMap[a.classification]||'acb-watch';
+    var tagHtml=(a.tags||[]).map(function(t){
+      var tCls=t.indexOf('URL')>=0?'url':t==='SCALE READY'?'scale':t==='KILL'||t==='ZERO PURCHASES'?'kill':t.indexOf('HOOK')>=0?'hook':t.indexOf('BRIEF')>=0?'brief':'';
+      return '<span class="audit-tag '+tCls+'">'+esc(t)+'</span>';
+    }).join('');
+
+    // Find matching ad metrics
+    var adData=null;
+    D.ads.forEach(function(d){if(d.id===a.id)adData=d;});
+    var i=adData&&adData.insights&&adData.insights.data&&adData.insights.data[0]?adData.insights.data[0]:{};
+    var spend=parseFloat(i.spend||0);
+    var actions=i.actions||[];
+    var purch=null,rev=null;
+    actions.forEach(function(ac){
+      if(ac.action_type==='offsite_conversion.fb_pixel_purchase')purch=ac;
+      if(ac.action_type==='offsite_conversion.fb_pixel_purchase_value')rev=ac;
+    });
+    var purchases=purch?parseInt(purch.value||0):0;
+    var revenue=rev?parseFloat(rev.value||0):0;
+    var roas=spend>0?revenue/spend:0;
+
+    html+='<div class="audit-card">'+
+      '<div class="audit-card-hdr">'+
+        '<span class="ac-badge '+cls+'">'+a.classification+'</span>'+
+        '<span class="ac-name" title="'+esc(a.name)+'">'+esc(a.name)+'</span>'+
+        '<span class="ac-score">Score: '+a.score+'/100</span>'+
+        '<span class="ac-score" style="margin-left:6px;color:var(--text3)">'+a.hook_type+'</span>'+
+      '</div>'+
+      '<div class="audit-card-body">'+
+        '<div class="audit-metrics">'+
+          metricBox('Spend',fs(spend))+
+          metricBox('ROAS',roas>0?roas.toFixed(1)+'x':'-')+
+          metricBox('Purchases',purchases)+
+          metricBox('Hook Rate',a.hookRate+'%')+
+          metricBox('Hook',a.hook_score)+
+        '</div>'+
+        '<div class="audit-ai-section">'+
+          '<div class="aas-title">Why</div>'+
+          '<div class="aas-body">'+esc(a.why)+'</div>'+
+        '</div>'+
+        '<div class="audit-ai-section">'+
+          '<div class="aas-title">Fix</div>'+
+          '<div class="aas-body"><strong>'+esc(a.fix)+'</strong></div>'+
+        '</div>'+
+        (a.brief?'<div class="audit-brief"><div class="ab-title">Creative Brief</div><div class="ab-body">'+esc(a.brief)+'</div></div>':'')+
+        '<div class="audit-actions">'+tagHtml+
+          (a.executable&&a.executable_action?'<button class="btn sm '+(a.executable_action==='PAUSE'?'red':'grn')+'" onclick="auditExecEl(this)" data-id="'+a.id+'" data-action="'+a.executable_action+'">'+a.executable_action+'</button>':'')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  });
+  html+='</div>';
+
+  var resEl=document.getElementById('AUDIT-RESULTS');
+  resEl.innerHTML=html;
+  resEl.style.display='block';
+}
+
+function metricBox(lbl,val){
+  return '<div class="am"><div class="am-lbl">'+lbl+'</div><div class="am-val">'+val+'</div></div>';
+}
+
+function auditExecEl(el){auditExec(el.getAttribute('data-id'),el.getAttribute('data-action'));}
+function auditExec(adId,action){
+  var status=action==='PAUSE'?'PAUSED':'ACTIVE';
+  api('/'+adId,'POST',{status:status}).then(function(){
+    D.ads.forEach(function(d){if(d.id===adId)d.status=status;});
+    addH({type:status==='PAUSED'?'pause':'activate',title:'AI Audit exec: '+adId,detail:'Set to '+status,source:'ai-audit'});
+    toast('Done: '+status);
+    rd('ads');
+  }).catch(function(e){toast('Error: '+e.message,'error');});
+}
+
+
+</script>
+</body>
+</html>
